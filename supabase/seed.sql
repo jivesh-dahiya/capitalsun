@@ -1,0 +1,3 @@
+-- Manufacturers, equipment models, panels/inverters/batteries are seeded from
+-- the real Clean Energy Council approved product catalog in migration
+-- 20260908000900_cec_approved_products.sql, not from this file.
