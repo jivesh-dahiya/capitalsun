@@ -81,9 +81,13 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
-      await loadProfile(newSession?.user?.id);
+      // Supabase awaits every onAuthStateChange subscriber before its own
+      // signIn/signUp/etc. calls resolve — an async callback that does slow
+      // work (loadProfile's retry loop) blocks those calls from ever
+      // returning. Deferring to a macrotask decouples it from that chain.
+      setTimeout(() => { loadProfile(newSession?.user?.id); }, 0);
     });
 
     return () => sub.subscription.unsubscribe();
@@ -92,20 +96,16 @@ export function AuthProvider({ children }) {
   const signUp = useCallback(async ({ email, password, firstName, lastName, companyName }) => {
     suppressAutoSignOut.current = true;
     try {
-      console.log('[signUp] calling auth.signUp');
       const { data, error } = await supabase.auth.signUp({ email, password });
-      console.log('[signUp] auth.signUp resolved', { error, userId: data?.user?.id });
       if (error) throw error;
       const userId = data.user?.id;
       if (!userId) throw new Error('Sign up did not return a user.');
 
-      console.log('[signUp] calling rpc create_company_profile');
       const { error: rpcError } = await supabase.rpc('create_company_profile', {
         p_company_name: companyName,
         p_first_name: firstName,
         p_last_name: lastName,
       });
-      console.log('[signUp] rpc resolved', { rpcError });
       if (rpcError) throw rpcError;
 
       await loadProfile(userId);
