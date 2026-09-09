@@ -92,16 +92,20 @@ export function AuthProvider({ children }) {
   const signUp = useCallback(async ({ email, password, firstName, lastName, companyName }) => {
     suppressAutoSignOut.current = true;
     try {
+      console.log('[signUp] calling auth.signUp');
       const { data, error } = await supabase.auth.signUp({ email, password });
+      console.log('[signUp] auth.signUp resolved', { error, userId: data?.user?.id });
       if (error) throw error;
       const userId = data.user?.id;
       if (!userId) throw new Error('Sign up did not return a user.');
 
+      console.log('[signUp] calling rpc create_company_profile');
       const { error: rpcError } = await supabase.rpc('create_company_profile', {
         p_company_name: companyName,
         p_first_name: firstName,
         p_last_name: lastName,
       });
+      console.log('[signUp] rpc resolved', { rpcError });
       if (rpcError) throw rpcError;
 
       await loadProfile(userId);
