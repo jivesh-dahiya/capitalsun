@@ -12,11 +12,22 @@ export function AuthProvider({ children }) {
   // listener also fires and races loadProfile against that creation step. Suppress
   // the auto-sign-out during that window so it doesn't kick out a brand-new user.
   const suppressAutoSignOut = useRef(false);
+  // loadProfile can be called concurrently (signUp's own call vs. the auth-state-change
+  // listener's call, both in flight at once) with no guarantee they resolve in the order
+  // they were started. Without this, a slower call finding "no profile yet" could land
+  // after a faster call already found it, wiping out otherwise-correct state. Only the
+  // most recently *started* call is allowed to write to state.
+  const loadProfileCallId = useRef(0);
 
   const loadProfile = useCallback(async (userId) => {
+    const callId = ++loadProfileCallId.current;
+    const isCurrent = () => callId === loadProfileCallId.current;
+
     if (!userId) {
-      setProfile(null);
-      setCompany(null);
+      if (isCurrent()) {
+        setProfile(null);
+        setCompany(null);
+      }
       return;
     }
     const { data: profileRow } = await supabase
@@ -24,16 +35,20 @@ export function AuthProvider({ children }) {
       .select('*')
       .eq('id', userId)
       .maybeSingle();
+    if (!isCurrent()) return;
 
     if (!profileRow) {
+      if (suppressAutoSignOut.current) {
+        // Signup is still in the middle of creating this row — leave existing
+        // state alone rather than clearing it, and don't sign out.
+        return;
+      }
       setProfile(null);
       setCompany(null);
-      if (!suppressAutoSignOut.current) {
-        // Session references a user with no linked profile (e.g. the local database
-        // was reset since this browser tab last logged in). Force back to login
-        // rather than leaving every page spinning on a company that will never load.
-        await supabase.auth.signOut();
-      }
+      // Session references a user with no linked profile (e.g. the local database
+      // was reset since this browser tab last logged in). Force back to login
+      // rather than leaving every page spinning on a company that will never load.
+      await supabase.auth.signOut();
       return;
     }
 
@@ -45,7 +60,7 @@ export function AuthProvider({ children }) {
         .select('*')
         .eq('id', profileRow.company_id)
         .maybeSingle();
-      setCompany(companyRow ?? null);
+      if (isCurrent()) setCompany(companyRow ?? null);
     } else {
       setCompany(null);
     }
