@@ -30,12 +30,19 @@ export function AuthProvider({ children }) {
       }
       return;
     }
-    const { data: profileRow } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-    if (!isCurrent()) return;
+
+    // A profile row can take a moment to become visible right after signup's
+    // create_company_profile RPC commits — a hard page reload or a fast
+    // navigation immediately after signing up can otherwise land here before
+    // that write is visible. Retry a few times before concluding it's really
+    // missing, rather than treating a timing gap as a signal to sign out.
+    let profileRow = null;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+      if (!isCurrent()) return;
+      if (data) { profileRow = data; break; }
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+    }
 
     if (!profileRow) {
       if (suppressAutoSignOut.current) {
@@ -45,9 +52,10 @@ export function AuthProvider({ children }) {
       }
       setProfile(null);
       setCompany(null);
-      // Session references a user with no linked profile (e.g. the local database
-      // was reset since this browser tab last logged in). Force back to login
-      // rather than leaving every page spinning on a company that will never load.
+      // Session references a user with no linked profile even after retrying
+      // (e.g. the local database was reset since this browser tab last logged
+      // in). Force back to login rather than leaving every page spinning on a
+      // company that will never load.
       await supabase.auth.signOut();
       return;
     }
