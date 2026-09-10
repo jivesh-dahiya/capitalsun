@@ -2,19 +2,36 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ZONE_DEFAULTS_BY_STATE, calculateStcCount } from '../lib/stcCalculator';
 import { AU_STATES } from './jobs/jobConstants';
-import { ChevronRightIcon, PeopleIcon } from '../components/icons';
+import { PeopleIcon } from '../components/icons';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const ASSUMED_STC_PRICE = 35;
 
-// Real stage labels from the actual job pipeline (jobConstants.js), a
-// representative arc through it — not the full 13-stage list, which would
-// be too dense to read at a glance here.
-const HERO_STAGES = [
-  { label: 'Site Inspection', cards: ['J. Whitfield — 6.6kW'] },
-  { label: 'In progress', cards: ['M. Alavi — 10kW + battery', 'R. Costa — 8.4kW'] },
-  { label: 'Submitted', cards: ['T. Nguyen — 13.2kW'] },
-  { label: 'Approved', cards: ['K. Osei — 9.9kW', 'D. Farrow — 6.6kW'] },
+// Real capabilities, each paired with an illustrative (AI-generated, not a
+// customer's actual site) photo — the tags are real product mechanisms, not
+// invented usage stats.
+const CAPABILITY_CARDS = [
+  {
+    num: '/01',
+    title: 'Satellite roof design',
+    image: '/landing-card-roof.jpg',
+    body: 'Satellite map, draw the roof face, auto-fill panels, pick real CEC-approved equipment, and get a production and rebate estimate — before you’ve left the quoting screen.',
+    tags: ['CEC-approved catalog', 'Production estimate'],
+  },
+  {
+    num: '/02',
+    title: 'Compliance paperwork',
+    image: '/landing-card-compliance.jpg',
+    body: 'Retailer declarations, STC Assignment Forms, customer proposals with e-signature — generated straight from the job’s real data, in the structure the scheme actually expects.',
+    tags: ['STC Assignment Form', 'E-signature'],
+  },
+  {
+    num: '/03',
+    title: 'Lead intake',
+    image: '/landing-card-leads.jpg',
+    body: 'A guided chat widget on your own site — or your existing contact form pushed straight in via API — estimates a system size and books an appointment. No lead waits until morning.',
+    tags: ['Chat widget', 'API intake'],
+  },
 ];
 
 export default function Landing() {
@@ -32,185 +49,125 @@ export default function Landing() {
   return (
     <div className="landing">
       <section className="landing-hero">
-        <video
-          className="landing-hero-video"
-          src="/landing-hero.mp4"
-          poster="/landing-hero-poster.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden="true"
-        />
-        <div className="landing-hero-scrim" aria-hidden="true" />
+        <div className="landing-hero-frame">
+          <img className="landing-hero-photo" src="/landing-hero-photo.jpg" alt="" aria-hidden="true" />
+          <div className="landing-hero-scrim" aria-hidden="true" />
 
-        <header className="landing-nav landing-nav--overlay">
-          <div className="landing-nav-brand">
-            <img src="/logo.png" alt="Capitalsun" />
-            <span>Capitalsun</span>
-          </div>
-          <Link className="landing-nav-signin" to="/login">Sign in</Link>
-        </header>
+          <header className="landing-nav landing-nav--overlay">
+            <div className="landing-nav-brand">
+              <img src="/logo.png" alt="Capitalsun" />
+              <span>Capitalsun</span>
+            </div>
+            <Link className="landing-nav-signin" to="/login">Sign in</Link>
+          </header>
 
-        <div className="landing-hero-inner">
           <div className="landing-hero-copy">
             <h1>The job manager built for how Australian solar actually gets installed.</h1>
             <p>
               Leads, quoting, satellite-map system design, the real government compliance pipeline, and STC
               paperwork generation — one system, not five spreadsheets and a shared inbox.
             </p>
-            <div className="landing-hero-actions">
-              <Link className="landing-hero-cta" to="/login?mode=signup">Start free</Link>
-              <Link className="landing-hero-cta-secondary" to="/login">Sign in</Link>
-            </div>
           </div>
+        </div>
 
-          <div className="landing-pipeline-wrap">
-            <span className="landing-pipeline-caption">Example jobs</span>
-            <div className="landing-pipeline" role="img" aria-label="Example job pipeline showing stages from site inspection through approval">
-              {HERO_STAGES.map((stage, i) => (
-                <div className={'landing-pipeline-col' + (i === HERO_STAGES.length - 1 ? ' is-final' : '')} key={stage.label}>
-                  <span className="landing-pipeline-label">{stage.label}</span>
-                  {stage.cards.map((card) => (
-                    <div className="landing-pipeline-card" key={card}>{card}</div>
-                  ))}
-                </div>
-              ))}
-            </div>
+        <div className="landing-hero-bar">
+          <label className="landing-hero-bar-field">
+            <span>System size (kW)</span>
+            <input type="number" min="0" step="0.1" value={calcKw} onChange={(e) => setCalcKw(e.target.value)} />
+          </label>
+          <label className="landing-hero-bar-field">
+            <span>State</span>
+            <select value={calcState} onChange={(e) => setCalcState(e.target.value)}>
+              {AU_STATES.map((s) => <option key={s}>{s}</option>)}
+            </select>
+          </label>
+          <label className="landing-hero-bar-field">
+            <span>Install year</span>
+            <input type="number" min={CURRENT_YEAR} max="2030" value={calcYear} onChange={(e) => setCalcYear(e.target.value)} />
+          </label>
+          <div className="landing-hero-bar-result">
+            <span className="landing-hero-bar-result-figure">{stcCount} STCs</span>
+            <span className="landing-hero-bar-result-sub">${stcValue.toLocaleString()} est. value</span>
+          </div>
+          <Link className="landing-hero-bar-cta" to="/login?mode=signup">Start free</Link>
+        </div>
+      </section>
+
+      <div className="landing-badges">
+        <span className="landing-badge landing-badge--brand">
+          <img src="/logo.png" alt="" aria-hidden="true" /> Capitalsun
+        </span>
+        <span className="landing-badge">Real STC compliance math</span>
+        <div className="landing-scheme-chips" aria-label="Australian solar scheme compliance">
+          <span>CEC</span>
+          <span>STC</span>
+          <span>CER</span>
+        </div>
+      </div>
+
+      <section className="landing-mission">
+        <div className="landing-mission-inner">
+          <span className="landing-mission-eyebrow">Not five spreadsheets and a shared inbox</span>
+          <h2>Capitalsun means running the whole job, one system.</h2>
+          <div className="landing-mission-divider" aria-hidden="true">
+            <span className="landing-mission-divider-dot" />
+            <span className="landing-mission-divider-line" />
+            <span className="landing-mission-divider-target" />
           </div>
         </div>
       </section>
 
-      <section className="landing-calc">
-        <div className="landing-calc-inner">
-          <div className="landing-calc-copy">
-            <h2>Real STC math, not a placeholder.</h2>
+      <section className="landing-gallery">
+        <div className="landing-gallery-inner">
+          <div className="landing-gallery-copy">
+            <span className="landing-gallery-eyebrow">/01 Real compliance</span>
+            <h3>Not a generic CRM wearing a solar hat.</h3>
             <p>
-              This is the same deeming calculation (system size × zone rating × years remaining on the scheme)
-              the app uses on a real quote. Try it.
+              Real STC rebate math using the actual government deeming formula, a real CEC-approved equipment
+              catalog, and STC Assignment Forms in the structure the scheme actually expects.
             </p>
+            <Link className="landing-hero-cta" to="/login?mode=signup">Start free</Link>
           </div>
-          <div className="landing-calc-tool">
-            <div className="landing-calc-row">
-              <label>System size (kW)
-                <input type="number" min="0" step="0.1" value={calcKw} onChange={(e) => setCalcKw(e.target.value)} />
-              </label>
-              <label>State
-                <select value={calcState} onChange={(e) => setCalcState(e.target.value)}>
-                  {AU_STATES.map((s) => <option key={s}>{s}</option>)}
-                </select>
-              </label>
-              <label>Install year
-                <input type="number" min={CURRENT_YEAR} max="2030" value={calcYear} onChange={(e) => setCalcYear(e.target.value)} />
-              </label>
-            </div>
-            <div className="landing-calc-result">
-              <div>
-                <span className="landing-calc-result-label">STCs</span>
-                <span className="landing-calc-result-figure">{stcCount}</span>
-              </div>
-              <div>
-                <span className="landing-calc-result-label">Indicative value</span>
-                <span className="landing-calc-result-figure">${stcValue.toLocaleString()}</span>
-              </div>
-            </div>
-            <p className="landing-calc-note">
-              Assumes ${ASSUMED_STC_PRICE}/certificate — STC prices float daily on the open market, so this is a
-              planning figure, not a live quote. Zone shown is a state default; the app lets you set the exact
-              postcode zone.
-            </p>
+          <div className="landing-gallery-photos">
+            <figure className="landing-gallery-photo landing-gallery-photo--main">
+              <img src="/landing-gallery-main.jpg" alt="Installer securing a solar panel on a residential roof" />
+              <figcaption>Rooftop install</figcaption>
+            </figure>
+            <figure className="landing-gallery-photo landing-gallery-photo--top">
+              <img src="/landing-gallery-hands.jpg" alt="Technician wiring a solar inverter" />
+              <figcaption>Inverter wiring</figcaption>
+            </figure>
+            <figure className="landing-gallery-photo landing-gallery-photo--bottom">
+              <img src="/landing-gallery-panel.jpg" alt="Close-up of a solar panel array" />
+              <figcaption>Panel array</figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <section className="landing-index">
-        <div className="landing-index-inner">
-          <div className="landing-index-header">
+      <section className="landing-cards">
+        <div className="landing-cards-inner">
+          <div className="landing-cards-header">
             <span>/What&apos;s inside</span>
             <span>Everything the job actually needs, not five separate tools</span>
           </div>
-
-          <details className="landing-index-row" open>
-            <summary>
-              <span className="landing-index-num">/01</span>
-              <span className="landing-index-title">Satellite roof design</span>
-              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
-            </summary>
-            <div className="landing-index-reveal">
-              <p>
-                The design tool sits inside the quote itself: satellite map, draw the roof face, auto-fill
-                panels, pick real CEC-approved equipment, and get a production and rebate estimate — before
-                you&apos;ve left the quoting screen.
-              </p>
-              <div className="landing-index-visual">
-                <div className="landing-map-roof">
-                  <span className="landing-map-compass" aria-hidden="true">N</span>
-                  <div className="landing-map-roof-plane">
-                    <div className="landing-map-panel-grid">
-                      {Array.from({ length: 24 }).map((_, i) => <span key={i} />)}
-                    </div>
+          <div className="landing-cards-grid">
+            {CAPABILITY_CARDS.map((card) => (
+              <article className="landing-card" key={card.num}>
+                <div className="landing-card-photo">
+                  <img src={card.image} alt="" aria-hidden="true" />
+                  <span className="landing-card-num">{card.num}</span>
+                </div>
+                <div className="landing-card-body">
+                  <h4>{card.title}</h4>
+                  <p>{card.body}</p>
+                  <div className="landing-card-tags">
+                    {card.tags.map((tag) => <span key={tag}>{tag}</span>)}
                   </div>
                 </div>
-              </div>
-            </div>
-          </details>
-
-          <details className="landing-index-row">
-            <summary>
-              <span className="landing-index-num">/02</span>
-              <span className="landing-index-title">Compliance paperwork</span>
-              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
-            </summary>
-            <div className="landing-index-reveal">
-              <p>
-                Retailer declarations, STC Assignment Forms, customer proposals with e-signature — generated
-                straight from the job&apos;s real data, in the structure the scheme actually expects.
-              </p>
-              <div className="landing-index-visual">
-                <div className="landing-form-mock">
-                  <div className="landing-form-mock-header">
-                    <span>STC Assignment Form</span>
-                    <span>Battery Systems</span>
-                  </div>
-                  <div className="landing-form-mock-row">
-                    <span>Site address</span>
-                    <span>14 Grovedale Cres, Ballarat VIC</span>
-                  </div>
-                  <div className="landing-form-mock-row">
-                    <span>System capacity</span>
-                    <span>6.6 kW</span>
-                  </div>
-                  <div className="landing-form-mock-row landing-form-mock-row--short">
-                    <span>STC zone</span>
-                    <span>Zone 3</span>
-                  </div>
-                  <div className="landing-form-mock-signature">Signed</div>
-                </div>
-              </div>
-            </div>
-          </details>
-
-          <details className="landing-index-row">
-            <summary>
-              <span className="landing-index-num">/03</span>
-              <span className="landing-index-title">Lead intake</span>
-              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
-            </summary>
-            <div className="landing-index-reveal">
-              <p>
-                A guided chat widget on your own site — or your existing contact form pushed straight in via
-                API — asks what a lead wants, gets their address and bill, estimates a system size, and books
-                an appointment. No lead waits until morning.
-              </p>
-              <div className="landing-index-visual">
-                <div className="landing-chat-mock">
-                  <div className="landing-chat-bubble landing-chat-bubble--them">What are you looking to install?</div>
-                  <div className="landing-chat-bubble landing-chat-bubble--us">Solar + battery, bill&apos;s around $380/quarter</div>
-                  <div className="landing-chat-bubble landing-chat-bubble--them">Got it — what&apos;s the install address?</div>
-                </div>
-              </div>
-            </div>
-          </details>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

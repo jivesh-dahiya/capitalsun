@@ -2943,54 +2943,43 @@ textarea {
 }
 
 /* --- Hero ---
-   Full-bleed from the very top of the page: the nav overlays transparently
-   on the dark band instead of sitting in its own light strip above it, so
-   the page opens straight into the one dark register break rather than a
-   corporate top bar. A soft single-source glow plus a near-black vignette
-   give the band depth without faking photography or product imagery. */
+   Photography-led: a full-bleed real jobsite photo (not a UI screenshot or
+   dark gradient band) carries the opening statement, with the STC
+   calculator restyled as a floating utility bar straddling the photo's
+   bottom edge — the same functional tool as before, repositioned as the
+   surface's primary action rather than a separate section further down. */
 
 .landing-hero {
   position: relative;
-  overflow: hidden;
-  background: #0c0e12;
-  color: #eceef1;
-  padding: 118px 28px 88px;
 }
 
-.landing-hero-video {
+.landing-hero-frame {
+  position: relative;
+  overflow: hidden;
+  min-height: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-hero-photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.5;
-  z-index: 0;
 }
 
 .landing-hero-scrim {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  background: radial-gradient(120% 100% at 18% -10%, rgba(27, 31, 39, 0.75) 0%, rgba(12, 14, 18, 0.88) 48%, #050609 100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-hero-video {
-    display: none;
-  }
-
-  .landing-hero-scrim {
-    background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
-  }
+  background: linear-gradient(180deg, rgba(9, 11, 15, 0.6) 0%, rgba(9, 11, 15, 0.05) 34%, rgba(9, 11, 15, 0.05) 56%, rgba(9, 11, 15, 0.72) 100%);
 }
 
 .landing-nav--overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 26px 28px;
+  position: relative;
   z-index: 2;
+  width: 100%;
+  padding: 26px 28px;
 }
 
 .landing-nav--overlay .landing-nav-brand {
@@ -2998,24 +2987,26 @@ textarea {
 }
 
 .landing-nav--overlay .landing-nav-signin {
-  border-color: rgba(255, 255, 255, 0.22);
-  color: #eceef1;
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
 }
 
 .landing-nav--overlay .landing-nav-signin:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.landing-hero-inner {
+.landing-hero-copy {
   position: relative;
   z-index: 1;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 56px;
-  align-items: center;
+  padding: 48px 28px 130px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .landing-hero-copy h1 {
@@ -3023,24 +3014,103 @@ textarea {
   line-height: 1.08;
   letter-spacing: -0.03em;
   color: #fff;
-  max-width: 18ch;
+  max-width: 16ch;
+  margin: 0;
 }
 
 .landing-hero-copy p {
-  margin: 26px 0 34px;
-  font-size: 1.08rem;
-  color: #b7bcc6;
-  max-width: 44ch;
+  margin: 22px 0 0;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 46ch;
 }
 
-.landing-hero-actions {
+.landing-hero-bar {
+  position: relative;
+  z-index: 3;
+  width: calc(100% - 56px);
+  max-width: 1080px;
+  margin: -56px auto 0;
   display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 22px 48px rgba(10, 12, 16, 0.22);
 }
 
-.landing-hero-cta,
-.landing-hero-cta-secondary {
+.landing-hero-bar-field,
+.landing-hero-bar-result {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 16px 22px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.landing-hero-bar-field span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.landing-hero-bar-field input,
+.landing-hero-bar-field select {
+  border: none;
+  padding: 0;
+  background: transparent;
+  font-size: 0.95rem;
+  color: var(--text);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.landing-hero-bar-field input:focus,
+.landing-hero-bar-field select:focus {
+  outline: none;
+}
+
+.landing-hero-bar-result {
+  flex: 0 0 auto;
+  min-width: 140px;
+}
+
+.landing-hero-bar-result-figure {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--primary-strong);
+}
+
+.landing-hero-bar-result-sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.landing-hero-bar-cta {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+  font-size: 0.98rem;
+  text-decoration: none;
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  transition: background-color 0.15s ease;
+}
+
+.landing-hero-bar-cta:hover {
+  background: var(--primary-strong);
+}
+
+.landing-hero-cta {
   display: inline-flex;
   align-items: center;
   padding: 15px 28px;
@@ -3048,216 +3118,248 @@ textarea {
   font-weight: 600;
   font-size: 0.98rem;
   text-decoration: none;
-  transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.landing-hero-cta {
-  background: #e0791f;
-  color: #1a0e04;
+  background: var(--primary);
+  color: var(--on-primary);
+  transition: transform 0.12s ease, background-color 0.15s ease;
 }
 
 .landing-hero-cta:hover {
   transform: translateY(-1px);
-  background: #f2892c;
+  background: var(--primary-strong);
 }
 
-.landing-hero-cta-secondary {
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #eceef1;
-}
+/* --- Badges ---
+   Factual chips only: the brand mark, one true product statement, and the
+   real AU compliance-scheme acronyms — no invented usage counts. */
 
-.landing-hero-cta-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-}
-
-.landing-pipeline-wrap {
+.landing-badges {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 28px 8px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.landing-pipeline-wrap::before {
-  content: '';
-  position: absolute;
-  /* Expands outward from the wrap's own box rather than a hand-tuned
-     percentage of the hero, so the glow always covers the full card
-     grid (both rows, all columns) regardless of viewport or content
-     changes, instead of floating as a generic corner blob. */
-  inset: -20% -16% -20% -16%;
-  background: radial-gradient(ellipse, rgba(224, 121, 31, 0.22) 0%, rgba(224, 121, 31, 0) 72%);
-  pointer-events: none;
-  z-index: -1;
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-soft);
 }
 
-.landing-pipeline-caption {
-  font-size: 0.7rem;
+.landing-badge--brand img {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+.landing-scheme-chips {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.landing-scheme-chips span {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 9px;
+}
+
+/* --- Mission statement --- */
+
+.landing-mission {
+  padding: 60px 28px 24px;
+  text-align: center;
+}
+
+.landing-mission-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.landing-mission-eyebrow {
+  display: block;
+  font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #8b93a1;
-  padding: 0 2px;
+  color: var(--muted);
+  margin-bottom: 14px;
 }
 
-.landing-pipeline {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 10px 6px 14px;
+.landing-mission h2 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-.landing-pipeline-col {
-  flex: 1 1 0;
-  min-width: 108px;
-  max-width: 140px;
+.landing-mission-divider {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
-  transform: rotate(var(--tilt, 0deg)) translateY(var(--lift, 0px));
-  animation: landing-pipeline-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  margin-top: 26px;
 }
 
-.landing-pipeline-col:nth-child(1) { --tilt: -2deg; --lift: 8px; animation-delay: 0.05s; }
-.landing-pipeline-col:nth-child(2) { --tilt: -0.5deg; --lift: -3px; animation-delay: 0.14s; }
-.landing-pipeline-col:nth-child(3) { --tilt: 0.8deg; --lift: 4px; animation-delay: 0.23s; }
-.landing-pipeline-col:nth-child(4) { --tilt: 2.2deg; --lift: -7px; animation-delay: 0.32s; }
-
-@keyframes landing-pipeline-in {
-  from { opacity: 0; transform: rotate(var(--tilt, 0deg)) translateY(calc(var(--lift, 0px) + 10px)); }
-  to { opacity: 1; transform: rotate(var(--tilt, 0deg)) translateY(var(--lift, 0px)); }
+.landing-mission-divider-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  flex: none;
 }
 
-.landing-pipeline-col.is-final .landing-pipeline-card {
-  border-color: rgba(224, 121, 31, 0.55);
-  background: rgba(224, 121, 31, 0.1);
+.landing-mission-divider-line {
+  flex: 0 0 120px;
+  height: 1px;
+  background: repeating-linear-gradient(to right, var(--line-strong) 0 6px, transparent 6px 12px);
 }
 
-.landing-pipeline-label {
-  font-size: 0.66rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #8b93a1;
-  padding: 0 2px;
+.landing-mission-divider-target {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  position: relative;
+  flex: none;
 }
 
-.landing-pipeline-card {
-  background: #14171d;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: var(--radius-sm);
-  padding: 10px 11px;
-  font-size: 0.74rem;
-  color: #c2c7d0;
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+.landing-mission-divider-target::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--primary);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .landing-pipeline-col {
-    animation: none;
-  }
+/* --- Gallery ---
+   Real product proof (compliance math, real catalog) paired with a
+   staggered jobsite photo cluster — the reference's "not your boring X"
+   editorial pairing, translated to solar-install imagery. */
+
+.landing-gallery {
+  padding: 24px 28px 80px;
 }
 
-/* --- Calculator --- */
-
-.landing-calc {
-  padding: 72px 28px;
-  border-bottom: 1px solid var(--line);
-}
-
-.landing-calc-inner {
+.landing-gallery-inner {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 56px;
-  align-items: start;
+  align-items: center;
 }
 
-.landing-calc-copy h2 {
-  font-size: 1.9rem;
-  max-width: 14ch;
+.landing-gallery-eyebrow {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 14px;
 }
 
-.landing-calc-copy p {
-  margin-top: 16px;
-  max-width: 36ch;
+.landing-gallery-copy h3 {
+  font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  max-width: 16ch;
 }
 
-.landing-calc-tool {
-  background: var(--panel);
-  border: 1px solid var(--line);
+.landing-gallery-copy p {
+  color: var(--text-soft);
+  max-width: 40ch;
+  margin: 0 0 28px;
+}
+
+.landing-gallery-photos {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  min-height: 380px;
+}
+
+.landing-gallery-photo {
+  margin: 0;
+  position: relative;
   border-radius: var(--radius-lg);
-  padding: 26px 28px;
+  overflow: hidden;
   box-shadow: var(--shadow-card);
 }
 
-.landing-calc-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+.landing-gallery-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.landing-calc-row label {
-  margin-bottom: 0;
+.landing-gallery-photo--main {
+  grid-column: 1;
+  grid-row: 1 / 3;
 }
 
-.landing-calc-result {
-  display: flex;
-  gap: 32px;
-  margin: 22px 0 14px;
-  padding-top: 20px;
+.landing-gallery-photo--top {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.landing-gallery-photo--bottom {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.landing-gallery-photo figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  background: rgba(12, 14, 18, 0.6);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* --- Capability cards ---
+   Replaces the earlier accordion index with a photo-card grid — the
+   reference's "Pick the Place" structure, carrying the same three real
+   capabilities and real mechanism tags instead of invented price/date
+   metadata. */
+
+.landing-cards {
+  padding: 24px 28px 80px;
   border-top: 1px solid var(--line);
 }
 
-.landing-calc-result-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.landing-calc-result-figure {
-  display: block;
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--primary-strong);
-}
-
-.landing-calc-note {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* --- Index / capability list ---
-   A numbered, expandable row list rather than three stacked icon+copy
-   blocks — each row opens (native <details>) to reveal its copy and the
-   same feature-visual mockups the old layout used. Stays on the light
-   ground per the One Dark Band Rule (DESIGN.md); the numbered-row idiom
-   itself is the borrowed device, not a second dark section. */
-
-.landing-index {
+.landing-cards-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 76px 28px;
 }
 
-.landing-index-header {
+.landing-cards-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 24px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--line-strong);
-  margin-bottom: 4px;
+  padding-bottom: 28px;
 }
 
-.landing-index-header span:first-child {
+.landing-cards-header span:first-child {
   font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -3265,263 +3367,91 @@ textarea {
   color: var(--muted);
 }
 
-.landing-index-header span:last-child {
-  font-size: 0.95rem;
-  color: var(--text-soft);
+.landing-cards-header span:last-child {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  max-width: 32ch;
   text-align: right;
 }
 
-.landing-index-row {
-  border-bottom: 1px solid var(--line);
-}
-
-.landing-index-row summary {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 26px 4px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.landing-index-row summary::-webkit-details-marker {
-  display: none;
-}
-
-.landing-index-row summary:hover {
-  background: var(--primary-tint);
-}
-
-.landing-index-num {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--muted);
-  width: 3ch;
-  flex: none;
-}
-
-.landing-index-title {
-  flex: 1;
-  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-.landing-index-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: none;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-}
-
-.landing-index-toggle svg {
-  transition: transform 0.2s ease;
-}
-
-.landing-index-row[open] .landing-index-toggle svg {
-  transform: rotate(90deg);
-}
-
-.landing-index-reveal {
+.landing-cards-grid {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 56px;
-  align-items: start;
-  padding: 4px 4px 40px 4px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
-.landing-index-row:nth-child(3) .landing-index-reveal {
-  grid-template-columns: 1.15fr 0.85fr;
-}
-
-.landing-index-row:nth-child(3) .landing-index-reveal p {
-  order: 2;
-}
-
-.landing-index-reveal p {
-  color: var(--text-soft);
-  max-width: 42ch;
-  margin: 0;
-}
-
-.landing-index-visual {
+.landing-card {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 28px;
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Map/roof mockup — a stylized roof outline with a panel grid, matching the
-   actual design tool's dark-panel-on-satellite look without faking a
-   screenshot. Mottled ground texture + a distinct roof plane sell the
-   "satellite view" read; a compass badge nods at real map tooling. */
-.landing-map-roof {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 90px 60px at 14% 22%, rgba(255, 255, 255, 0.06), transparent 70%),
-    radial-gradient(ellipse 110px 70px at 85% 16%, rgba(0, 0, 0, 0.22), transparent 70%),
-    radial-gradient(ellipse 130px 90px at 78% 84%, rgba(255, 255, 255, 0.045), transparent 70%),
-    radial-gradient(ellipse 100px 70px at 18% 88%, rgba(0, 0, 0, 0.2), transparent 70%),
-    #2f3b2a;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
 }
 
-.landing-map-compass {
+.landing-card-photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+}
+
+.landing-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.landing-card-num {
   position: absolute;
   top: 14px;
-  right: 14px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(0, 0, 0, 0.25);
-  color: rgba(255, 255, 255, 0.7);
+  left: 14px;
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 0.65rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.landing-map-roof-plane {
-  width: 68%;
-  aspect-ratio: 3 / 2;
-  background: #4b4536;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 6px;
-  transform: rotate(-3deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8%;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
-}
-
-.landing-map-panel-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 3px;
-  width: 100%;
-}
-
-.landing-map-panel-grid span {
-  aspect-ratio: 3 / 2;
-  background: linear-gradient(160deg, #3062e0, #1d4ed8);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 2px;
-}
-
-/* Compliance form mockup */
-.landing-form-mock {
-  width: 100%;
-  max-width: 320px;
-  background: var(--bg);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  padding: 20px;
-}
-
-.landing-form-mock-header {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
-  border-bottom: 2px solid var(--text);
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-}
-
-.landing-form-mock-header span:first-child {
-  font-weight: 700;
-  font-size: 0.92rem;
-}
-
-.landing-form-mock-header span:last-child {
-  font-size: 0.72rem;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.landing-form-mock-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.78rem;
-}
-
-.landing-form-mock-row span:first-child {
-  color: var(--muted);
-}
-
-.landing-form-mock-row span:last-child {
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  color: var(--text);
-  font-weight: 500;
-}
-
-.landing-form-mock-row--short span:last-child {
-  color: var(--primary);
-}
-
-.landing-form-mock-signature {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line-strong);
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 0.78rem;
-  color: var(--success);
+  font-size: 0.76rem;
   font-weight: 600;
+  color: #fff;
+  background: rgba(12, 14, 18, 0.55);
+  padding: 4px 9px;
+  border-radius: 6px;
 }
 
-/* Chat mockup */
-.landing-chat-mock {
-  width: 100%;
-  max-width: 340px;
+.landing-card-body {
+  padding: 22px 24px 26px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  flex: 1;
 }
 
-.landing-chat-bubble {
-  padding: 11px 15px;
-  border-radius: 14px;
-  font-size: 0.88rem;
-  max-width: 85%;
-  line-height: 1.4;
+.landing-card-body h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
 }
 
-.landing-chat-bubble--them {
-  background: var(--panel-alt);
-  border: 1px solid var(--line);
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
+.landing-card-body p {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  margin: 0;
+  flex: 1;
 }
 
-.landing-chat-bubble--us {
-  background: var(--primary);
-  color: var(--on-primary);
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
+.landing-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.landing-card-tags span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--primary-strong);
+  background: var(--primary-tint);
+  padding: 5px 10px;
+  border-radius: 999px;
 }
 
 /* --- Team / close --- */
@@ -3550,15 +3480,6 @@ textarea {
   margin: 16px 0 26px;
 }
 
-.landing-team-inner .landing-hero-cta {
-  background: var(--primary);
-  color: var(--on-primary);
-}
-
-.landing-team-inner .landing-hero-cta:hover {
-  background: var(--primary-strong);
-}
-
 /* --- Footer --- */
 
 .landing-footer {
@@ -3578,43 +3499,48 @@ textarea {
 }
 
 @media (max-width: 860px) {
-  .landing-hero-inner,
-  .landing-calc-inner,
-  .landing-index-reveal {
-    /* minmax(0, 1fr), not 1fr: a bare 1fr track won't shrink below its
-       content's min-content width, and the pipeline strip's four columns
-       are wide enough to force the whole page into horizontal scroll. */
+  .landing-gallery-inner {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .landing-index-row:nth-child(3) .landing-index-reveal p {
-    order: 0;
+  .landing-gallery-photos {
+    order: -1;
+    margin-bottom: 32px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    min-height: 0;
   }
 
-  .landing-index-header {
+  .landing-gallery-photo--main {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    aspect-ratio: 16 / 10;
+  }
+
+  .landing-gallery-photo--top {
+    grid-column: 1;
+    grid-row: 2;
+    aspect-ratio: 1;
+  }
+
+  .landing-gallery-photo--bottom {
+    grid-column: 2;
+    grid-row: 2;
+    aspect-ratio: 1;
+  }
+
+  .landing-cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .landing-cards-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
 
-  .landing-index-header span:last-child {
+  .landing-cards-header span:last-child {
     text-align: left;
-  }
-
-  .landing-index-row summary {
-    gap: 14px;
-  }
-
-  .landing-index-toggle span {
-    display: none;
-  }
-
-  .landing-calc-row {
-    grid-template-columns: 1fr;
-  }
-
-  .landing-calc-result {
-    gap: 40px;
   }
 
   .landing-nav {
@@ -3625,16 +3551,12 @@ textarea {
     padding: 20px 20px;
   }
 
-  .landing-hero {
-    padding: 108px 20px 56px;
+  .landing-hero-frame {
+    min-height: 560px;
   }
 
-  .landing-hero-video {
-    display: none;
-  }
-
-  .landing-hero-scrim {
-    background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
+  .landing-hero-copy {
+    padding: 40px 20px 96px;
   }
 
   .landing-hero-copy h1 {
@@ -3645,33 +3567,35 @@ textarea {
     max-width: 21ch;
   }
 
-  .landing-pipeline-wrap::before {
-    inset: -14% -20% -14% -20%;
+  .landing-hero-bar {
+    width: calc(100% - 40px);
+    flex-direction: column;
+    margin-top: -40px;
   }
 
-  .landing-calc,
-  .landing-index,
+  .landing-hero-bar-field,
+  .landing-hero-bar-result {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding: 14px 18px;
+  }
+
+  .landing-hero-bar-cta {
+    padding: 16px;
+    border-radius: 0;
+  }
+
+  .landing-badges,
+  .landing-mission,
+  .landing-gallery,
+  .landing-cards,
   .landing-team {
     padding-left: 20px;
     padding-right: 20px;
   }
 
-  .landing-pipeline {
-    mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
-    scroll-snap-type: x proximity;
-  }
-
-  .landing-pipeline-col {
-    min-width: 122px;
-    scroll-snap-align: start;
-  }
-
-  .landing-pipeline-caption::after {
-    content: ' — swipe for more →';
-    color: #8b93a1;
-    text-transform: none;
-    letter-spacing: normal;
-    font-weight: 500;
+  .landing-scheme-chips {
+    margin-left: 0;
+    width: 100%;
   }
 }

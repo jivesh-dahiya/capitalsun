@@ -36,7 +36,8 @@ Workflows already built and live: lead intake (including an AI-style guided chat
 - Product name: **Capitalsun**. Legal entity behind it: Capital Solar Energy Pty Ltd (ABN 67642449590) — the entity, not necessarily the customer-facing product framing now that it's being positioned as a SaaS others can join.
 - Logo mark: an orange pinwheel/flower icon, served at `/logo.png`, already in use across the app (sign-in, favicon, mobile app icon).
 - Primary brand color: burnt-orange, `#c2560c` (light mode) / `#e0791f` (dark mode) — the `--primary` CSS custom property already defined in `src/styles.css`.
-- Established visual direction (see Evidence on Hand): light-mode-first, utilitarian/grounded "Operate" surfaces — no violet/blue AI-SaaS gradient aesthetic. The user has explicitly rejected that look before.
+- Established visual direction (see Evidence on Hand): light-mode-first, utilitarian/grounded "Operate" surfaces for the authenticated app — no violet/blue AI-SaaS gradient aesthetic. The user has explicitly rejected that look before.
+- The public landing page (`/`) is a Persuade surface and is a deliberate exception to the above: as of the photography-led redesign, it carries full-bleed AI-generated jobsite photography (hero photo, staggered gallery, capability-card photos) rather than the app's flat/utilitarian treatment. This does not extend to the authenticated app, which stays photography-free. See DESIGN.md for the current landing-page direction.
 
 ## Evidence on Hand
 
