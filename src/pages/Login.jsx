@@ -6,9 +6,6 @@ import { SunIcon, MoonIcon } from '../components/icons';
 export default function Login({ theme: { theme, toggleTheme } }) {
   const { signIn, signUp, requestPasswordReset } = useAuth();
   const [searchParams] = useSearchParams();
-  // Public sign-up isn't linked from the UI in production — a brand-new
-  // company workspace is created once via this query param, then teammates
-  // are added through Profile's "Invite" flow instead of open sign-up.
   const [mode, setMode] = useState(searchParams.get('mode') === 'signup' ? 'signup' : 'signin');
   const [form, setForm] = useState({
     email: '',
@@ -127,14 +124,13 @@ export default function Login({ theme: { theme, toggleTheme } }) {
           </button>
         )}
 
-        {mode === 'reset' && (
+        {mode === 'reset' ? (
           <button type="button" className="link-btn" onClick={() => switchMode('signin')}>
             Back to sign in
           </button>
-        )}
-        {mode === 'signup' && (
-          <button type="button" className="link-btn" onClick={() => switchMode('signin')}>
-            Already have an account? Sign in
+        ) : (
+          <button type="button" className="link-btn" onClick={() => switchMode(mode === 'signin' ? 'signup' : 'signin')}>
+            {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
           </button>
         )}
       </form>
