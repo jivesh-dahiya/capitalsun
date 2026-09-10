@@ -144,8 +144,11 @@ export default function Landing() {
               </p>
               <div className="landing-index-visual">
                 <div className="landing-map-roof">
-                  <div className="landing-map-panel-grid">
-                    {Array.from({ length: 24 }).map((_, i) => <span key={i} />)}
+                  <span className="landing-map-compass" aria-hidden="true">N</span>
+                  <div className="landing-map-roof-plane">
+                    <div className="landing-map-panel-grid">
+                      {Array.from({ length: 24 }).map((_, i) => <span key={i} />)}
+                    </div>
                   </div>
                 </div>
               </div>
