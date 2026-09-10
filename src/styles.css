@@ -2952,9 +2952,36 @@ textarea {
 .landing-hero {
   position: relative;
   overflow: hidden;
-  background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
+  background: #0c0e12;
   color: #eceef1;
   padding: 118px 28px 88px;
+}
+
+.landing-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.landing-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(120% 100% at 18% -10%, rgba(27, 31, 39, 0.75) 0%, rgba(12, 14, 18, 0.88) 48%, #050609 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero-video {
+    display: none;
+  }
+
+  .landing-hero-scrim {
+    background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
+  }
 }
 
 .landing-nav--overlay {
@@ -3563,6 +3590,14 @@ textarea {
 
   .landing-hero {
     padding: 108px 20px 56px;
+  }
+
+  .landing-hero-video {
+    display: none;
+  }
+
+  .landing-hero-scrim {
+    background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
   }
 
   .landing-hero-copy h1 {

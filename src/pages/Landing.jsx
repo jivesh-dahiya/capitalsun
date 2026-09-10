@@ -32,6 +32,18 @@ export default function Landing() {
   return (
     <div className="landing">
       <section className="landing-hero">
+        <video
+          className="landing-hero-video"
+          src="/landing-hero.mp4"
+          poster="/landing-hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        />
+        <div className="landing-hero-scrim" aria-hidden="true" />
+
         <header className="landing-nav landing-nav--overlay">
           <div className="landing-nav-brand">
             <img src="/logo.png" alt="Capitalsun" />
