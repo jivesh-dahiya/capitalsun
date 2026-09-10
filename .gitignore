@@ -9,3 +9,6 @@ supabase/.temp
 
 # impeccable design-review scratch screenshots (not durable artifacts)
 .impeccable/review/
+
+# user-supplied design reference clip, not a project asset
+UI.mp4

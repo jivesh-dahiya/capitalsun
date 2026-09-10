@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ZONE_DEFAULTS_BY_STATE, calculateStcCount } from '../lib/stcCalculator';
 import { AU_STATES } from './jobs/jobConstants';
-import { CheckCircleIcon, CertificateIcon, ChatBubbleIcon, PeopleIcon } from '../components/icons';
+import { ChevronRightIcon, PeopleIcon } from '../components/icons';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const ASSUMED_STC_PRICE = 35;
@@ -111,73 +111,91 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="landing-feature">
-        <div className="landing-feature-copy">
-          <CheckCircleIcon width={22} height={22} />
-          <h2>Draw the roof, fill the panels, quote it.</h2>
-          <p>
-            The design tool sits inside the quote itself: satellite map, draw the roof face, auto-fill panels,
-            pick real CEC-approved equipment, and get a production and rebate estimate — before you've left the
-            quoting screen.
-          </p>
-        </div>
-        <div className="landing-feature-visual landing-feature-visual--map">
-          <div className="landing-map-roof">
-            <div className="landing-map-panel-grid">
-              {Array.from({ length: 24 }).map((_, i) => <span key={i} />)}
-            </div>
+      <section className="landing-index">
+        <div className="landing-index-inner">
+          <div className="landing-index-header">
+            <span>/What&apos;s inside</span>
+            <span>Everything the job actually needs, not five separate tools</span>
           </div>
-        </div>
-      </section>
 
-      <section className="landing-feature landing-feature--reverse">
-        <div className="landing-feature-copy">
-          <CertificateIcon width={22} height={22} />
-          <h2>The compliance paperwork writes itself.</h2>
-          <p>
-            Retailer declarations, STC Assignment Forms, customer proposals with e-signature — generated
-            straight from the job's real data, in the structure the scheme actually expects.
-          </p>
-        </div>
-        <div className="landing-feature-visual landing-feature-visual--form">
-          <div className="landing-form-mock">
-            <div className="landing-form-mock-header">
-              <span>STC Assignment Form</span>
-              <span>Battery Systems</span>
+          <details className="landing-index-row" open>
+            <summary>
+              <span className="landing-index-num">/01</span>
+              <span className="landing-index-title">Satellite roof design</span>
+              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
+            </summary>
+            <div className="landing-index-reveal">
+              <p>
+                The design tool sits inside the quote itself: satellite map, draw the roof face, auto-fill
+                panels, pick real CEC-approved equipment, and get a production and rebate estimate — before
+                you&apos;ve left the quoting screen.
+              </p>
+              <div className="landing-index-visual">
+                <div className="landing-map-roof">
+                  <div className="landing-map-panel-grid">
+                    {Array.from({ length: 24 }).map((_, i) => <span key={i} />)}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="landing-form-mock-row">
-              <span>Site address</span>
-              <span>14 Grovedale Cres, Ballarat VIC</span>
-            </div>
-            <div className="landing-form-mock-row">
-              <span>System capacity</span>
-              <span>6.6 kW</span>
-            </div>
-            <div className="landing-form-mock-row landing-form-mock-row--short">
-              <span>STC zone</span>
-              <span>Zone 3</span>
-            </div>
-            <div className="landing-form-mock-signature">Signed</div>
-          </div>
-        </div>
-      </section>
+          </details>
 
-      <section className="landing-feature">
-        <div className="landing-feature-copy">
-          <ChatBubbleIcon width={22} height={22} />
-          <h2>Leads qualified before your team wakes up.</h2>
-          <p>
-            A guided chat widget on your own site — or your existing contact form pushed straight in via API —
-            asks what a lead wants, gets their address and bill, estimates a system size, and books an
-            appointment. No lead waits until morning.
-          </p>
-        </div>
-        <div className="landing-feature-visual landing-feature-visual--chat">
-          <div className="landing-chat-mock">
-            <div className="landing-chat-bubble landing-chat-bubble--them">What are you looking to install?</div>
-            <div className="landing-chat-bubble landing-chat-bubble--us">Solar + battery, bill's around $380/quarter</div>
-            <div className="landing-chat-bubble landing-chat-bubble--them">Got it — what's the install address?</div>
-          </div>
+          <details className="landing-index-row">
+            <summary>
+              <span className="landing-index-num">/02</span>
+              <span className="landing-index-title">Compliance paperwork</span>
+              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
+            </summary>
+            <div className="landing-index-reveal">
+              <p>
+                Retailer declarations, STC Assignment Forms, customer proposals with e-signature — generated
+                straight from the job&apos;s real data, in the structure the scheme actually expects.
+              </p>
+              <div className="landing-index-visual">
+                <div className="landing-form-mock">
+                  <div className="landing-form-mock-header">
+                    <span>STC Assignment Form</span>
+                    <span>Battery Systems</span>
+                  </div>
+                  <div className="landing-form-mock-row">
+                    <span>Site address</span>
+                    <span>14 Grovedale Cres, Ballarat VIC</span>
+                  </div>
+                  <div className="landing-form-mock-row">
+                    <span>System capacity</span>
+                    <span>6.6 kW</span>
+                  </div>
+                  <div className="landing-form-mock-row landing-form-mock-row--short">
+                    <span>STC zone</span>
+                    <span>Zone 3</span>
+                  </div>
+                  <div className="landing-form-mock-signature">Signed</div>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details className="landing-index-row">
+            <summary>
+              <span className="landing-index-num">/03</span>
+              <span className="landing-index-title">Lead intake</span>
+              <span className="landing-index-toggle"><span>See more</span><ChevronRightIcon width={16} height={16} /></span>
+            </summary>
+            <div className="landing-index-reveal">
+              <p>
+                A guided chat widget on your own site — or your existing contact form pushed straight in via
+                API — asks what a lead wants, gets their address and bill, estimates a system size, and books
+                an appointment. No lead waits until morning.
+              </p>
+              <div className="landing-index-visual">
+                <div className="landing-chat-mock">
+                  <div className="landing-chat-bubble landing-chat-bubble--them">What are you looking to install?</div>
+                  <div className="landing-chat-bubble landing-chat-bubble--us">Solar + battery, bill&apos;s around $380/quarter</div>
+                  <div className="landing-chat-bubble landing-chat-bubble--them">Got it — what&apos;s the install address?</div>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 

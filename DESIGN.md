@@ -182,6 +182,13 @@ Small, consistent corner radii throughout: `6px` for buttons, chips, and small c
 ### Pipeline Stage Card (signature component)
 The hero's proof device: a column-per-stage kanban strip using the product's real stage vocabulary (Site Inspection → In progress → Submitted → Approved), each holding one or two example job cards in IBM Plex Mono. Columns carry a slight independent rotation and vertical offset (`--tilt`, `--lift`, roughly ±2deg / ±8px) with a staggered entrance animation, giving the strip a "cards laid on a desk" physicality rather than a flat screenshot crop. The final stage's cards get an orange-tinted border/background to mark completion. The strip is explicitly captioned "Example jobs" in a small uppercase label — a functional data-honesty disclosure (these are illustrative, not real customer jobs), not a decorative marketing eyebrow.
 
+### Numbered Index Row
+Replaces the earlier stacked icon+copy feature sections. Each capability (`/01 Satellite roof design`, `/02 Compliance paperwork`, `/03 Lead intake`) is a native `<details>/<summary>` row: an index ordinal, a Headline-weight title, and a "See more" affordance with a chevron that rotates 90° on expand (desktop shows the "See more" label; ≤860px collapses to the chevron alone). The first row is open by default so the section isn't fully gated behind interaction. Expanding a row reveals the same copy/visual pairing the old feature sections used, alternating grid order row-to-row exactly as the retired `.landing-feature--reverse` pattern did.
+
+This idiom is adapted from a numbered-project-list pattern (real-estate portfolio reference, not a competitor product) the user supplied as inspiration: the numbered-row/expand-to-reveal structure is borrowed, but the reference's dark full-bleed background is deliberately not — this component stays on the light neutral ground per the One Dark Band Rule below. The ordinals (`/01`–`/03`) and the "/What's inside" header label are set in IBM Plex Sans at the Label scale, not IBM Plex Mono — they are decorative/structural index markers, not computed values, so the Real-Number Mono Rule excludes them.
+
+Row titles (`.landing-index-title`, `clamp(1.3rem, 2.4vw, 1.7rem)`, 700 weight) introduce a new type step between Body and Headline — a deliberate choice: three consecutive rows set at full Headline scale (1.7–1.9rem) would read as three competing section headers stacked in one list rather than one list with three entries.
+
 ## Do's and Don'ts
 
 ### Do:

@@ -3161,48 +3161,128 @@ textarea {
   margin: 0;
 }
 
-/* --- Feature sections --- */
+/* --- Index / capability list ---
+   A numbered, expandable row list rather than three stacked icon+copy
+   blocks — each row opens (native <details>) to reveal its copy and the
+   same feature-visual mockups the old layout used. Stays on the light
+   ground per the One Dark Band Rule (DESIGN.md); the numbered-row idiom
+   itself is the borrowed device, not a second dark section. */
 
-.landing-feature {
+.landing-index {
   max-width: 1200px;
   margin: 0 auto;
   padding: 76px 28px;
+}
+
+.landing-index-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: 4px;
+}
+
+.landing-index-header span:first-child {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.landing-index-header span:last-child {
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  text-align: right;
+}
+
+.landing-index-row {
+  border-bottom: 1px solid var(--line);
+}
+
+.landing-index-row summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 26px 4px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.landing-index-row summary::-webkit-details-marker {
+  display: none;
+}
+
+.landing-index-row summary:hover {
+  background: var(--primary-tint);
+}
+
+.landing-index-num {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  width: 3ch;
+  flex: none;
+}
+
+.landing-index-title {
+  flex: 1;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.landing-index-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.landing-index-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.landing-index-row[open] .landing-index-toggle svg {
+  transform: rotate(90deg);
+}
+
+.landing-index-reveal {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 56px;
   align-items: center;
+  padding: 4px 4px 40px 4px;
 }
 
-.landing-feature--reverse {
+.landing-index-row:nth-child(3) .landing-index-reveal {
   grid-template-columns: 1.15fr 0.85fr;
 }
 
-.landing-feature--reverse .landing-feature-copy {
+.landing-index-row:nth-child(3) .landing-index-reveal p {
   order: 2;
 }
 
-.landing-feature-copy svg {
-  color: var(--primary);
-  margin-bottom: 14px;
-}
-
-.landing-feature-copy h2 {
-  font-size: 1.7rem;
-  max-width: 16ch;
-}
-
-.landing-feature-copy p {
-  margin-top: 14px;
+.landing-index-reveal p {
+  color: var(--text-soft);
   max-width: 42ch;
+  margin: 0;
 }
 
-.landing-feature-visual {
+.landing-index-visual {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 28px;
-  min-height: 260px;
+  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3390,16 +3470,33 @@ textarea {
 @media (max-width: 860px) {
   .landing-hero-inner,
   .landing-calc-inner,
-  .landing-feature,
-  .landing-feature--reverse {
+  .landing-index-reveal {
     /* minmax(0, 1fr), not 1fr: a bare 1fr track won't shrink below its
        content's min-content width, and the pipeline strip's four columns
        are wide enough to force the whole page into horizontal scroll. */
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .landing-feature--reverse .landing-feature-copy {
+  .landing-index-row:nth-child(3) .landing-index-reveal p {
     order: 0;
+  }
+
+  .landing-index-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .landing-index-header span:last-child {
+    text-align: left;
+  }
+
+  .landing-index-row summary {
+    gap: 14px;
+  }
+
+  .landing-index-toggle span {
+    display: none;
   }
 
   .landing-calc-row {
@@ -3419,7 +3516,7 @@ textarea {
   }
 
   .landing-calc,
-  .landing-feature,
+  .landing-index,
   .landing-team {
     padding-left: 20px;
     padding-right: 20px;
