@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './lib/AuthContext';
 import { useTheme } from './lib/useTheme';
@@ -33,6 +33,17 @@ function App() {
   const { session, loading } = useAuth();
   const theme = useTheme();
   const location = useLocation();
+
+  // The ?mode=signup bootstrap link's session goes truthy mid-signUp() (as
+  // soon as Supabase establishes it), well before the Login component's own
+  // post-signup cleanup would run — often unmounting Login first. Strip the
+  // param here instead, driven by session state rather than component
+  // lifecycle, so a later logout correctly remounts into sign-in, not signup.
+  useEffect(() => {
+    if (session && window.location.search.includes('mode=signup')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [session]);
 
   // Public, unauthenticated surface: customers accept a proposal without ever logging in.
   if (location.pathname.startsWith('/accept/')) {

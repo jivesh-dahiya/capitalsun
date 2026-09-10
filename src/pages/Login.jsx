@@ -5,7 +5,7 @@ import { SunIcon, MoonIcon } from '../components/icons';
 
 export default function Login({ theme: { theme, toggleTheme } }) {
   const { signIn, signUp, requestPasswordReset } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   // Public sign-up isn't linked from the UI in production — a brand-new
   // company workspace is created once via this query param, then teammates
   // are added through Profile's "Invite" flow instead of open sign-up.
@@ -37,10 +37,6 @@ export default function Login({ theme: { theme, toggleTheme } }) {
         setResetSent(true);
       } else {
         await signUp(form);
-        // Clear ?mode=signup once the account exists — otherwise logging out
-        // remounts this page with the same URL and lands back on the signup
-        // form instead of sign-in, since the query param is still there.
-        setSearchParams({}, { replace: true });
       }
     } catch (err) {
       setError(err.message || 'Something went wrong.');
