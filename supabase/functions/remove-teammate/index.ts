@@ -1,7 +1,7 @@
-// Invites a new teammate into the CALLING user's own company. Public sign-up
-// is disabled in production, so this is how an existing account holder adds
-// staff — it needs the service-role key to create the auth user, which is
-// why this runs as an Edge Function rather than a direct client call.
+// Removes a teammate from the CALLING user's own company. Only an owner or
+// admin can do this, and the owner account itself can never be removed this
+// way (there's no ownership-transfer flow yet, so that stays a manual/
+// support action rather than something exploitable here).
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 
@@ -23,7 +23,6 @@ Deno.serve(async (req) => {
   const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-  // Scoped to the caller's own session — used only to find out who they are.
   const callerClient = createClient(supabaseUrl, anonKey, {
     global: { headers: { Authorization: authHeader } },
   });
@@ -39,40 +38,38 @@ Deno.serve(async (req) => {
     return json({ error: "Couldn't find a company for your account" }, 400);
   }
   if (!['owner', 'admin'].includes(callerProfile.role)) {
-    return json({ error: 'Only an owner or admin can invite teammates' }, 403);
+    return json({ error: 'Only an owner or admin can remove teammates' }, 403);
   }
 
-  let body: { email?: string; firstName?: string; lastName?: string; role?: string };
+  let body: { userId?: string };
   try {
     body = await req.json();
   } catch {
     return json({ error: 'Invalid request body' }, 400);
   }
-  const email = body.email?.trim();
-  if (!email) return json({ error: 'Email is required' }, 400);
-  const role = body.role === 'admin' ? 'admin' : 'member';
+  const userId = body.userId?.trim();
+  if (!userId) return json({ error: 'userId is required' }, 400);
 
   // Elevated client — service-role key never reaches the browser.
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
-  const siteUrl = Deno.env.get('SITE_URL');
 
-  const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
-    redirectTo: siteUrl ? `${siteUrl}/reset-password` : undefined,
-  });
-  if (inviteError) return json({ error: inviteError.message }, 400);
-
-  const { error: insertError } = await adminClient.from('profiles').insert({
-    id: invited.user.id,
-    company_id: callerProfile.company_id,
-    first_name: body.firstName || null,
-    last_name: body.lastName || null,
-    role,
-  });
-  if (insertError) {
-    // Roll back the auth user so a failed invite doesn't leave an orphaned account.
-    await adminClient.auth.admin.deleteUser(invited.user.id);
-    return json({ error: insertError.message }, 400);
+  const { data: targetProfile, error: targetLookupError } = await adminClient
+    .from('profiles')
+    .select('company_id, role')
+    .eq('id', userId)
+    .maybeSingle();
+  if (targetLookupError || !targetProfile) return json({ error: 'Teammate not found' }, 404);
+  if (targetProfile.company_id !== callerProfile.company_id) {
+    return json({ error: "That account isn't part of your company" }, 403);
+  }
+  if (targetProfile.role === 'owner') {
+    return json({ error: "The owner account can't be removed" }, 400);
   }
 
-  return json({ success: true, userId: invited.user.id });
+  // Deleting the auth user cascades to their profiles row (profiles.id
+  // references auth.users.id on delete cascade).
+  const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
+  if (deleteError) return json({ error: deleteError.message }, 400);
+
+  return json({ success: true });
 });

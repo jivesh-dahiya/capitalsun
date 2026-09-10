@@ -9,9 +9,13 @@ export default function Profile() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteFirstName, setInviteFirstName] = useState('');
   const [inviteLastName, setInviteLastName] = useState('');
+  const [inviteRole, setInviteRole] = useState('member');
   const [inviteBusy, setInviteBusy] = useState(false);
   const [inviteError, setInviteError] = useState('');
   const [inviteSent, setInviteSent] = useState(false);
+  const [teamActionError, setTeamActionError] = useState('');
+  const [teamActionBusyId, setTeamActionBusyId] = useState(null);
+  const canManageTeam = profile?.role === 'owner' || profile?.role === 'admin';
 
   async function loadTeammates() {
     if (!company) return;
@@ -32,7 +36,7 @@ export default function Profile() {
     setInviteSent(false);
     setInviteBusy(true);
     const { data, error } = await supabase.functions.invoke('invite-teammate', {
-      body: { email: inviteEmail.trim(), firstName: inviteFirstName.trim(), lastName: inviteLastName.trim() },
+      body: { email: inviteEmail.trim(), firstName: inviteFirstName.trim(), lastName: inviteLastName.trim(), role: inviteRole },
     });
     setInviteBusy(false);
     if (error || data?.error) {
@@ -42,7 +46,36 @@ export default function Profile() {
     setInviteEmail('');
     setInviteFirstName('');
     setInviteLastName('');
+    setInviteRole('member');
     setInviteSent(true);
+    loadTeammates();
+  }
+
+  async function changeRole(teammateId, role) {
+    setTeamActionError('');
+    setTeamActionBusyId(teammateId);
+    const { error } = await supabase.from('profiles').update({ role }).eq('id', teammateId);
+    setTeamActionBusyId(null);
+    if (error) {
+      setTeamActionError(error.message);
+      return;
+    }
+    loadTeammates();
+  }
+
+  async function removeTeammate(teammate) {
+    const name = [teammate.first_name, teammate.last_name].filter(Boolean).join(' ') || 'this teammate';
+    if (!window.confirm(`Remove ${name} from your team? They'll lose access immediately.`)) return;
+    setTeamActionError('');
+    setTeamActionBusyId(teammate.id);
+    const { data, error } = await supabase.functions.invoke('remove-teammate', {
+      body: { userId: teammate.id },
+    });
+    setTeamActionBusyId(null);
+    if (error || data?.error) {
+      setTeamActionError(data?.error || error?.message || "Couldn't remove that teammate.");
+      return;
+    }
     loadTeammates();
   }
   const [form, setForm] = useState(null);
@@ -285,38 +318,74 @@ export default function Profile() {
         <p className="muted-label" style={{ marginTop: -8, marginBottom: 14 }}>
           Public sign-up is off in production — this is how you add staff. An invited teammate gets an email with a
           link to set their own password and join {company.company_name || 'your company'}.
+          {!canManageTeam && ' Only an owner or admin can invite, promote, or remove teammates.'}
         </p>
+
+        {teamActionError && <div className="auth-error" style={{ marginBottom: 12 }}>{teamActionError}</div>}
 
         {teammatesLoading ? (
           <div className="empty-state">Loading team…</div>
         ) : (
           <table style={{ marginBottom: 18 }}>
-            <thead><tr><th>Name</th><th>Mobile</th></tr></thead>
+            <thead><tr><th>Name</th><th>Mobile</th><th>Role</th>{canManageTeam && <th></th>}</tr></thead>
             <tbody>
-              {teammates.map((t) => (
-                <tr key={t.id}>
-                  <td>{[t.first_name, t.last_name].filter(Boolean).join(' ') || '—'}{t.id === profile?.id ? ' (you)' : ''}</td>
-                  <td>{t.mobile || '—'}</td>
-                </tr>
-              ))}
+              {teammates.map((t) => {
+                const isSelf = t.id === profile?.id;
+                const busy = teamActionBusyId === t.id;
+                return (
+                  <tr key={t.id}>
+                    <td>{[t.first_name, t.last_name].filter(Boolean).join(' ') || '—'}{isSelf ? ' (you)' : ''}</td>
+                    <td>{t.mobile || '—'}</td>
+                    <td>
+                      {canManageTeam && t.role !== 'owner' && !isSelf ? (
+                        <select value={t.role} disabled={busy} onChange={(e) => changeRole(t.id, e.target.value)} style={{ padding: '3px 6px' }}>
+                          <option value="member">Member</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      ) : (
+                        <span className={'badge ' + (t.role === 'owner' ? 'badge-amber' : t.role === 'admin' ? 'badge-green' : 'badge-neutral')}>
+                          {t.role === 'owner' ? 'Owner' : t.role === 'admin' ? 'Admin' : 'Member'}
+                        </span>
+                      )}
+                    </td>
+                    {canManageTeam && (
+                      <td>
+                        {t.role !== 'owner' && !isSelf && (
+                          <button type="button" className="doc-remove" aria-label="Remove teammate" disabled={busy} onClick={() => removeTeammate(t)}>×</button>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
 
-        <form onSubmit={handleInvite}>
-          <div className="field-row">
-            <label>First name<input value={inviteFirstName} onChange={(e) => setInviteFirstName(e.target.value)} /></label>
-            <label>Last name<input value={inviteLastName} onChange={(e) => setInviteLastName(e.target.value)} /></label>
-          </div>
-          <label>Email
-            <input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} required />
-          </label>
-          {inviteError && <div className="auth-error">{inviteError}</div>}
-          {inviteSent && <div className="status-pill" style={{ marginBottom: 12 }}>Invite sent</div>}
-          <div className="modal-actions">
-            <button type="submit" className="primary-btn" disabled={inviteBusy}>{inviteBusy ? 'Sending…' : 'Send invite'}</button>
-          </div>
-        </form>
+        {canManageTeam && (
+          <form onSubmit={handleInvite}>
+            <div className="field-row">
+              <label>First name<input value={inviteFirstName} onChange={(e) => setInviteFirstName(e.target.value)} /></label>
+              <label>Last name<input value={inviteLastName} onChange={(e) => setInviteLastName(e.target.value)} /></label>
+            </div>
+            <div className="field-row">
+              <label>Email
+                <input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} required />
+              </label>
+              <label>Role
+                <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value)}>
+                  <option value="member">Member</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+            </div>
+            {inviteError && <div className="auth-error">{inviteError}</div>}
+            {inviteSent && <div className="status-pill" style={{ marginBottom: 12 }}>Invite sent</div>}
+            <div className="modal-actions">
+              <button type="submit" className="primary-btn" disabled={inviteBusy}>{inviteBusy ? 'Sending…' : 'Send invite'}</button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
