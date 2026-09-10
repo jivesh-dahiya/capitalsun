@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-10T00:00:00Z",
+  "title": "Design System: Capitalsun",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Burnt Orange", "canonical": "#c2560c", "tonalRamp": ["#3a1704", "#5c2408", "#7e320b", "#a5480a", "#c2560c", "#e0791f", "#f2892c", "#fdf1e8"] },
+      "primary-dark": { "role": "primary", "displayName": "Burnt Orange (dark mode)", "canonical": "#e0791f", "tonalRamp": ["#2b1608", "#4a260d", "#6e3811", "#a5480a", "#c2560c", "#e0791f", "#f2892c", "#fbdcc0"] },
+      "bg": { "role": "neutral", "displayName": "Page Gray", "canonical": "#eef0f3", "tonalRamp": ["#171a20", "#3a3f47", "#6b7280", "#a3a9b3", "#cbd0d9", "#e1e4e9", "#eef0f3", "#f6f7f9"] },
+      "panel": { "role": "neutral", "displayName": "Panel White", "canonical": "#ffffff", "tonalRamp": ["#171a20", "#454b56", "#6b7280", "#cbd0d9", "#e1e4e9", "#f6f7f9", "#fbfbfc", "#ffffff"] },
+      "text": { "role": "neutral", "displayName": "Ink", "canonical": "#171a20", "tonalRamp": ["#0a0b0d", "#171a20", "#454b56", "#6b7280", "#8b93a1", "#cbd0d9", "#e1e4e9", "#f6f7f9"] },
+      "hero-band": { "role": "neutral", "displayName": "Hero Near-Black", "canonical": "#0c0e12", "tonalRamp": ["#0c0e12", "#14171d", "#1a1e25", "#454b56", "#6b7280", "#8b93a1", "#c2c7d0", "#eceef1"] },
+      "success": { "role": "tertiary", "displayName": "Signed Green", "canonical": "#157a43", "tonalRamp": ["#0a2e19", "#0f4f2b", "#157a43", "#1f9e58", "#3fb673", "#7fd3a3", "#bfe9d1", "#e6f4ec"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Hero Display", "purpose": "Hero H1 only, one per page." },
+      "headline": { "displayName": "Section Headline", "purpose": "Section H2s below the hero." },
+      "body": { "displayName": "Body Copy", "purpose": "Paragraph text, IBM Plex Sans, capped measure." },
+      "label": { "displayName": "Caption Label", "purpose": "Uppercase small labels for stage names, result labels, form-mock captions." },
+      "numeral": { "displayName": "Real-Number Mono", "purpose": "IBM Plex Mono reserved for computed or structured values only (STC counts, dollar figures, job cards, form values)." }
+    },
+    "shadows": [
+      { "name": "shadow-card", "value": "0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06)", "purpose": "Ambient lift under white panels on the light ground." },
+      { "name": "shadow-pipeline-card", "value": "0 4px 14px rgba(0, 0, 0, 0.28)", "purpose": "Ambient lift under job cards inside the dark hero band." }
+    ],
+    "motion": [
+      { "name": "pipeline-entrance", "value": "0.6s cubic-bezier(0.16, 1, 0.3, 1), staggered 0.05s-0.32s per column", "purpose": "Staggered rise-and-fade entrance for the hero pipeline columns; respects prefers-reduced-motion." },
+      { "name": "hover-lift", "value": "transform 0.12s ease, translateY(-1px)", "purpose": "Primary button hover lift." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-collapse", "value": "860px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid orange CTA, used once per section as the primary action.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Start free</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; padding: 13px 24px; border-radius: 6px; font-weight: 600; font-size: 0.96rem; text-decoration: none; background: #e0791f; color: #1a0e04; transition: transform 0.12s ease, background-color 0.15s ease; } .ds-btn-primary:hover, .ds-btn-primary:focus-visible { transform: translateY(-1px); background: #f2892c; } .ds-btn-primary:focus-visible { outline: 2px solid #c2560c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ghost/outline CTA paired with the primary button, used on the dark hero band.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">Sign in</a>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; padding: 13px 24px; border-radius: 6px; font-weight: 600; font-size: 0.96rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.22); color: #eceef1; background: transparent; transition: border-color 0.15s ease; } .ds-btn-secondary:hover, .ds-btn-secondary:focus-visible { border-color: rgba(255,255,255,0.45); }"
+    },
+    {
+      "name": "Card / Panel",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White bordered panel with ambient shadow, used for the calculator tool and feature visuals.",
+      "html": "<div class=\"ds-card\">Panel content</div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e1e4e9; border-radius: 12px; padding: 26px 28px; box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.06); }"
+    },
+    {
+      "name": "Pipeline Stage Card",
+      "kind": "custom",
+      "refersTo": "pipeline-card",
+      "description": "Signature hero component: a tilted job card in a kanban stage column, real numeral typography.",
+      "html": "<div class=\"ds-pipeline-col\"><span class=\"ds-pipeline-label\">Approved</span><div class=\"ds-pipeline-card\">K. Osei — 9.9kW</div></div>",
+      "css": ".ds-pipeline-col { display: flex; flex-direction: column; gap: 8px; transform: rotate(2.2deg) translateY(-7px); } .ds-pipeline-label { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #8b93a1; } .ds-pipeline-card { background: #14171d; border: 1px solid rgba(224,121,31,0.55); border-radius: 6px; padding: 10px 11px; font-size: 0.74rem; color: #c2c7d0; font-family: 'IBM Plex Mono', ui-monospace, monospace; box-shadow: 0 4px 14px rgba(0,0,0,0.28); }"
+    },
+    {
+      "name": "Live Result Figure",
+      "kind": "custom",
+      "refersTo": "numeral",
+      "description": "Mono numeral treatment for the live STC calculator's computed output.",
+      "html": "<div><span class=\"ds-result-label\">STCs</span><span class=\"ds-result-figure\">45</span></div>",
+      "css": ".ds-result-label { display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; margin-bottom: 4px; } .ds-result-figure { display: block; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 2rem; font-weight: 600; color: #a5480a; }"
+    },
+    {
+      "name": "Chat Bubble",
+      "kind": "custom",
+      "refersTo": "chat-bubble",
+      "description": "Two-tone conversational mock for the lead-chat feature section; the one place the system uses a rounded bubble convention.",
+      "html": "<div class=\"ds-chat ds-chat--us\">Solar + battery, bill's around $380/quarter</div>",
+      "css": ".ds-chat { padding: 11px 15px; border-radius: 14px; font-size: 0.88rem; max-width: 85%; line-height: 1.4; } .ds-chat--them { background: #f6f7f9; border: 1px solid #e1e4e9; border-bottom-left-radius: 4px; } .ds-chat--us { background: #c2560c; color: #ffffff; border-bottom-right-radius: 4px; margin-left: auto; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Machine",
+    "overview": "Capitalsun's visual system is a compliance-grade job manager that happens to have a public face, not a SaaS marketing site wearing a product's name. The landing surface inherits the authenticated app's tokens wholesale (--primary, --bg, --panel, --text, --line) rather than forking a separate \"marketing\" palette, and extends them with page-scale weight: the burnt-orange primary carries a full-bleed dark hero band and bold CTA fills, not just accent dots on a white page. Nothing is invented to look busier than the product is — no stock photography, no fabricated logos or testimonials, no gradient blobs. Where the page shows data (pipeline cards, STC figures, form fields), it is either the real app's actual data shape or explicitly labeled as an example. The pairing of IBM Plex Sans for all display and body text with IBM Plex Mono reserved strictly for computed or structured numerals is the system's signature move: the typeface itself tells the reader which numbers are real math versus which text is persuasive copy. This is a deliberate rejection of the generic SaaS default in favor of an engineering-adjacent character that fits a government-compliance product.",
+    "keyCharacteristics": [
+      "Inherited, not forked: one token set spans the authenticated app and the public landing page.",
+      "Orange is used at page scale on this surface (full-bleed CTA sections, dark hero band), a deliberate departure from the accent-only role it plays inside the authenticated app's UI chrome.",
+      "IBM Plex Mono is a semantic signal, not a decorative monospace — it appears only on numerals and structured/tabular data.",
+      "Flat, bordered surfaces with soft single-layer shadows; no heavy elevation, no glassmorphism, no violet/blue AI-gradient aesthetic (explicitly rejected per PRODUCT.md)."
+    ],
+    "rules": [
+      { "name": "The Inherited Token Rule", "body": "New surfaces reuse the authenticated app's --primary/--bg/--panel/--text/--line custom properties rather than defining a parallel marketing palette. A landing/marketing surface may raise the primary's page-scale weight (full-bleed bands, bold fills); it may not introduce a new accent hue.", "section": "colors" },
+      { "name": "The One Dark Band Rule", "body": "The near-black hero background is a one-time register break used exactly once per page, for the single most important above-the-fold statement. It does not repeat as a section-alternation device.", "section": "colors" },
+      { "name": "The Real-Number Mono Rule", "body": "IBM Plex Mono is applied only to values that are computed or pulled from structured data — never to marketing copy, headlines, or labels for decorative effect.", "section": "typography" },
+      { "name": "The Ambient-Only Rule", "body": "Shadows on this surface are always soft and multi-directional (blur radius >= offset), never a hard single-offset \"sticker\" shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do reuse the app's existing --primary/--bg/--panel/--text/--line tokens on any new public-facing surface rather than defining a parallel palette.",
+      "Do render every real, computed, or structured numeral in IBM Plex Mono; keep IBM Plex Sans for all narrative copy.",
+      "Do label illustrative/example data explicitly in the UI (as the hero pipeline does with \"Example jobs\") rather than presenting invented data as real.",
+      "Do keep shadows soft and ambient (--shadow-card family); keep radii small and consistent (6px/8px/12px).",
+      "Do cap paragraph measure (36-46ch) and headline measure (14-16ch) per the established pattern."
+    ],
+    "donts": [
+      "Don't invent customer logos, testimonials, review quotes, or pricing tiers — none exist yet, and PRODUCT.md forbids fabricating them.",
+      "Don't introduce a violet/blue gradient \"AI SaaS\" aesthetic; the brand has explicitly rejected that look.",
+      "Don't repeat the near-black hero band as a recurring section-alternation pattern; it is a one-time register break for the hero only.",
+      "Don't apply IBM Plex Mono to decorative or non-computed text; its use is a semantic signal, not a stylistic flourish.",
+      "Don't use hard-offset \"sticker\" shadows or heavy borders; depth stays ambient and hairline throughout."
+    ]
+  }
+}

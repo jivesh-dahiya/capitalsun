@@ -6,3 +6,6 @@ dist
 .env.local
 supabase/.branches
 supabase/.temp
+
+# impeccable design-review scratch screenshots (not durable artifacts)
+.impeccable/review/

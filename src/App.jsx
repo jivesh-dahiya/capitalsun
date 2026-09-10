@@ -4,6 +4,7 @@ import { useAuth } from './lib/AuthContext';
 import { useTheme } from './lib/useTheme';
 import AppShell from './layout/AppShell';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import JobsPage from './pages/jobs/JobsPage';
 import JobDetailPage from './pages/jobs/JobDetailPage';
@@ -83,7 +84,7 @@ function App() {
   }
 
   if (!session) {
-    return <Login theme={theme} />;
+    return location.pathname === '/login' ? <Login theme={theme} /> : <Landing theme={theme} />;
   }
 
   return (
