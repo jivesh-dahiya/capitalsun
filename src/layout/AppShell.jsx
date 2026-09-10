@@ -60,7 +60,7 @@ export default function AppShell({ theme: { theme, toggleTheme } }) {
       <aside className={'sidebar' + (navOpen ? ' open' : '')}>
         <div className="sidebar-head">
           <div className="brand-row">
-            <div className="brand-mark">C</div>
+            <div className="brand-mark"><img src="/logo.png" alt="Capitalsun" /></div>
             <div>
               <div className="brand-name">Capitalsun</div>
               <div className="brand-subtitle">{company?.company_name || 'Solar Job Manager'}</div>

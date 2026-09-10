@@ -53,7 +53,7 @@ export default function Login({ theme: { theme, toggleTheme } }) {
       <form className="auth-card" onSubmit={handleSubmit}>
         <div className="brand-row" style={{ justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-            <div className="brand-mark">C</div>
+            <div className="brand-mark"><img src="/logo.png" alt="Capitalsun" /></div>
             <div>
               <div className="brand-name">Capitalsun</div>
               <div className="brand-subtitle">Solar Job Manager</div>

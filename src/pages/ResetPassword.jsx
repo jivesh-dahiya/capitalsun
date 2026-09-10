@@ -34,7 +34,7 @@ export default function ResetPassword() {
     <div className="auth-shell">
       <form className="auth-card" onSubmit={handleSubmit}>
         <div className="brand-row">
-          <div className="brand-mark">C</div>
+          <div className="brand-mark"><img src="/logo.png" alt="Capitalsun" /></div>
           <div>
             <div className="brand-name">Capitalsun</div>
             <div className="brand-subtitle">Solar Job Manager</div>
