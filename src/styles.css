@@ -1299,7 +1299,7 @@ textarea {
   font-weight: 700;
 }
 
-.mobile-topbar {
+.bottom-tab-bar {
   display: none;
 }
 
@@ -1327,29 +1327,52 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  /* A sticky-positioned header can end up compositing above a same-page
-     position:fixed overlay regardless of z-index, in at least Chromium —
-     raising the overlay's z-index alone doesn't fix it. Hiding the topbar
-     whenever a full-screen overlay is open is the robust fix. */
-  .app-shell:has(.modal-backdrop) .mobile-topbar,
-  .app-shell:has(.sidebar-backdrop) .mobile-topbar {
+  /* A fixed-position bar can end up compositing above a same-page modal
+     backdrop regardless of z-index, in at least Chromium — raising the
+     backdrop's z-index alone doesn't fix it. Hiding the tab bar whenever a
+     full-screen overlay is open is the robust fix (same issue the old
+     sticky topbar had). */
+  .app-shell:has(.modal-backdrop) .bottom-tab-bar {
     visibility: hidden;
   }
 
-  .mobile-topbar {
+  .bottom-tab-bar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
+    align-items: stretch;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: var(--sidebar);
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 0;
+    border-top: 1px solid var(--line);
+    /* Clears the iPhone home-indicator / Android gesture bar. */
+    padding-bottom: env(safe-area-inset-bottom, 0);
     z-index: 30;
   }
 
-  .mobile-topbar .icon-btn {
-    color: var(--text);
+  .bottom-tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px 4px 8px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.66rem;
+    font-weight: 600;
+  }
+
+  .bottom-tab-item.active {
+    color: var(--primary);
+  }
+
+  .main-panel {
+    /* Keeps content from tucking under the fixed tab bar. */
+    padding-bottom: calc(24px + 58px + env(safe-area-inset-bottom, 0));
   }
 
   .sidebar-backdrop {

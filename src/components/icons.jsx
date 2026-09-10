@@ -182,3 +182,34 @@ export function StarIcon(props) {
     </svg>
   );
 }
+
+export function HomeIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9" />
+    </svg>
+  );
+}
+
+export function PeopleIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6" />
+      <path d="M15.5 5.5a3.2 3.2 0 0 1 0 6" />
+      <path d="M15 14c2.5.3 4.5 2.7 4.5 6" />
+    </svg>
+  );
+}
+
+export function GridIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.4" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.4" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.4" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.4" />
+    </svg>
+  );
+}

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { withViewTransition } from '../lib/viewTransition';
-import { MenuIcon, CloseIcon, SunIcon, MoonIcon, SearchIcon } from '../components/icons';
+import { CloseIcon, SunIcon, MoonIcon, SearchIcon, HomeIcon, BriefcaseIcon, PeopleIcon, CertificateIcon, GridIcon } from '../components/icons';
 import CommandPalette from '../components/CommandPalette';
 import { useNewLeadAlerts } from '../lib/useNewLeadAlerts';
 
@@ -19,12 +19,23 @@ const nav = [
   { to: '/profile', label: 'Profile' },
 ];
 
+// The four most-used pages for someone working day-to-day (field staff,
+// salespeople) get a permanent tab; everything else — the same full list
+// above — lives behind "More", which opens the drawer.
+const bottomTabs = [
+  { to: '/', label: 'Home', end: true, Icon: HomeIcon },
+  { to: '/jobs', label: 'Jobs', Icon: BriefcaseIcon },
+  { to: '/leads', label: 'Leads', Icon: PeopleIcon },
+  { to: '/quotes', label: 'Quotes', Icon: CertificateIcon },
+];
+
 export default function AppShell({ theme: { theme, toggleTheme } }) {
   const { company, profile, signOut } = useAuth();
   const [navOpen, setNavOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [leadToast, setLeadToast] = useNewLeadAlerts(company?.id);
+  const isOnMoreTab = !bottomTabs.some((item) => (item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)));
 
   useEffect(() => {
     if (!leadToast) return;
@@ -44,17 +55,6 @@ export default function AppShell({ theme: { theme, toggleTheme } }) {
 
   return (
     <div className="app-shell">
-      <header className="mobile-topbar">
-        <button className="icon-btn" aria-label="Open menu" onClick={() => setNavOpen(true)}>
-          <MenuIcon />
-        </button>
-        <div className="brand-row" style={{ marginBottom: 0 }}>
-          <div className="brand-mark">C</div>
-          <div className="brand-name">Capitalsun</div>
-        </div>
-        <div style={{ width: 20 }} />
-      </header>
-
       {navOpen && <div className="sidebar-backdrop" onClick={() => setNavOpen(false)} />}
 
       <aside className={'sidebar' + (navOpen ? ' open' : '')}>
@@ -109,6 +109,29 @@ export default function AppShell({ theme: { theme, toggleTheme } }) {
       <main className="main-panel">
         <Outlet />
       </main>
+
+      <nav className="bottom-tab-bar">
+        {bottomTabs.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            onClick={(e) => handleNavClick(e, item.to)}
+            className={({ isActive }) => 'bottom-tab-item' + (isActive ? ' active' : '')}
+          >
+            <item.Icon width={22} height={22} />
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+        <button
+          type="button"
+          className={'bottom-tab-item' + (isOnMoreTab ? ' active' : '')}
+          onClick={() => setNavOpen(true)}
+        >
+          <GridIcon width={22} height={22} />
+          <span>More</span>
+        </button>
+      </nav>
 
       <CommandPalette />
 
