@@ -2942,35 +2942,68 @@ textarea {
   background: var(--primary-tint);
 }
 
-/* --- Hero --- */
+/* --- Hero ---
+   Full-bleed from the very top of the page: the nav overlays transparently
+   on the dark band instead of sitting in its own light strip above it, so
+   the page opens straight into the one dark register break rather than a
+   corporate top bar. A soft single-source glow plus a near-black vignette
+   give the band depth without faking photography or product imagery. */
 
 .landing-hero {
-  background: #0c0e12;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(120% 100% at 18% -10%, #1b1f27 0%, #0c0e12 48%, #050609 100%);
   color: #eceef1;
-  padding: 8px 28px 64px;
+  padding: 118px 28px 88px;
+}
+
+.landing-nav--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 26px 28px;
+  z-index: 2;
+}
+
+.landing-nav--overlay .landing-nav-brand {
+  color: #fff;
+}
+
+.landing-nav--overlay .landing-nav-signin {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #eceef1;
+}
+
+.landing-nav--overlay .landing-nav-signin:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .landing-hero-inner {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: 56px;
   align-items: center;
-  padding-top: 40px;
 }
 
 .landing-hero-copy h1 {
-  font-size: clamp(2.1rem, 4vw, 3.15rem);
+  font-size: clamp(2.3rem, 4vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: #fff;
-  max-width: 15ch;
+  max-width: 18ch;
 }
 
 .landing-hero-copy p {
-  margin: 22px 0 30px;
+  margin: 26px 0 34px;
   font-size: 1.08rem;
   color: #b7bcc6;
-  max-width: 46ch;
+  max-width: 44ch;
 }
 
 .landing-hero-actions {
@@ -2983,10 +3016,10 @@ textarea {
 .landing-hero-cta-secondary {
   display: inline-flex;
   align-items: center;
-  padding: 13px 24px;
+  padding: 15px 28px;
   border-radius: var(--radius-sm);
   font-weight: 600;
-  font-size: 0.96rem;
+  font-size: 0.98rem;
   text-decoration: none;
   transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
@@ -3015,6 +3048,19 @@ textarea {
   flex-direction: column;
   gap: 10px;
   position: relative;
+}
+
+.landing-pipeline-wrap::before {
+  content: '';
+  position: absolute;
+  /* Expands outward from the wrap's own box rather than a hand-tuned
+     percentage of the hero, so the glow always covers the full card
+     grid (both rows, all columns) regardless of viewport or content
+     changes, instead of floating as a generic corner blob. */
+  inset: -20% -16% -20% -16%;
+  background: radial-gradient(ellipse, rgba(224, 121, 31, 0.22) 0%, rgba(224, 121, 31, 0) 72%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .landing-pipeline-caption {
@@ -3511,8 +3557,24 @@ textarea {
     padding: 18px 20px;
   }
 
+  .landing-nav--overlay {
+    padding: 20px 20px;
+  }
+
   .landing-hero {
-    padding: 4px 20px 48px;
+    padding: 108px 20px 56px;
+  }
+
+  .landing-hero-copy h1 {
+    /* Independent of the desktop clamp: sized and measured against the
+       actual mobile column width for balanced 3-line breaks, same as the
+       desktop fix, rather than inheriting a cap tuned for a wider column. */
+    font-size: 1.95rem;
+    max-width: 21ch;
+  }
+
+  .landing-pipeline-wrap::before {
+    inset: -14% -20% -14% -20%;
   }
 
   .landing-calc,

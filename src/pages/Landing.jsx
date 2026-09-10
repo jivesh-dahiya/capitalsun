@@ -31,15 +31,15 @@ export default function Landing() {
 
   return (
     <div className="landing">
-      <header className="landing-nav">
-        <div className="landing-nav-brand">
-          <img src="/logo.png" alt="Capitalsun" />
-          <span>Capitalsun</span>
-        </div>
-        <Link className="landing-nav-signin" to="/login">Sign in</Link>
-      </header>
-
       <section className="landing-hero">
+        <header className="landing-nav landing-nav--overlay">
+          <div className="landing-nav-brand">
+            <img src="/logo.png" alt="Capitalsun" />
+            <span>Capitalsun</span>
+          </div>
+          <Link className="landing-nav-signin" to="/login">Sign in</Link>
+        </header>
+
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
             <h1>The job manager built for how Australian solar actually gets installed.</h1>
