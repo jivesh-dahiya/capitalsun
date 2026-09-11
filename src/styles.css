@@ -690,6 +690,109 @@ tbody tr:last-child td {
   margin-bottom: 14px;
 }
 
+/* --- Plan chooser (post-signup / billing gate) --- */
+
+.plan-cycle-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 22px;
+}
+
+.plan-cycle-toggle button {
+  border: none;
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: 4px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.plan-cycle-toggle button.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.plan-cycle-save {
+  font-weight: 500;
+  opacity: 0.8;
+  margin-left: 4px;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.plan-card {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-card--highlight {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.plan-card-badge {
+  position: absolute;
+  top: -11px;
+  left: 20px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.plan-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.plan-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.plan-card-price-figure {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.plan-card-price-unit {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.plan-card-seats {
+  margin: 0 0 8px;
+  font-size: 0.86rem;
+  color: var(--text-soft);
+}
+
+@media (max-width: 720px) {
+  .plan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .duplicate-warning {
   background: var(--amber-tint);
   color: var(--amber);

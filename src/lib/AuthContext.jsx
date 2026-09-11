@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(undefined);
   const [profile, setProfile] = useState(null);
   const [company, setCompany] = useState(null);
+  const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   // While a signUp() call is creating the profile/company row, the auth-state-change
   // listener also fires and races loadProfile against that creation step. Suppress
@@ -27,6 +28,7 @@ export function AuthProvider({ children }) {
       if (isCurrent()) {
         setProfile(null);
         setCompany(null);
+        setSubscription(null);
       }
       return;
     }
@@ -63,14 +65,17 @@ export function AuthProvider({ children }) {
     setProfile(profileRow);
 
     if (profileRow.company_id) {
-      const { data: companyRow } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', profileRow.company_id)
-        .maybeSingle();
-      if (isCurrent()) setCompany(companyRow ?? null);
+      const [{ data: companyRow }, { data: subscriptionRow }] = await Promise.all([
+        supabase.from('companies').select('*').eq('id', profileRow.company_id).maybeSingle(),
+        supabase.from('company_subscriptions').select('*, plans(*)').eq('company_id', profileRow.company_id).maybeSingle(),
+      ]);
+      if (isCurrent()) {
+        setCompany(companyRow ?? null);
+        setSubscription(subscriptionRow ?? null);
+      }
     } else {
       setCompany(null);
+      setSubscription(null);
     }
   }, []);
 
@@ -141,7 +146,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ session, profile, company, loading, signUp, signIn, signOut, requestPasswordReset, updatePassword, refreshCompany }}
+      value={{ session, profile, company, subscription, loading, signUp, signIn, signOut, requestPasswordReset, updatePassword, refreshCompany }}
     >
       {children}
     </AuthContext.Provider>

@@ -3,9 +3,11 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/AuthContext';
 
 export default function Profile() {
-  const { profile, company, refreshCompany } = useAuth();
+  const { profile, company, subscription, refreshCompany } = useAuth();
   const [teammates, setTeammates] = useState([]);
   const [teammatesLoading, setTeammatesLoading] = useState(true);
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [billingError, setBillingError] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteFirstName, setInviteFirstName] = useState('');
   const [inviteLastName, setInviteLastName] = useState('');
@@ -61,6 +63,18 @@ export default function Profile() {
       return;
     }
     loadTeammates();
+  }
+
+  async function openBillingPortal() {
+    setBillingError('');
+    setBillingBusy(true);
+    const { data, error } = await supabase.functions.invoke('create-billing-portal-session', { body: {} });
+    setBillingBusy(false);
+    if (error || data?.error) {
+      setBillingError(data?.error || error?.message || "Couldn't open billing.");
+      return;
+    }
+    window.location.href = data.url;
   }
 
   async function removeTeammate(teammate) {
@@ -312,6 +326,32 @@ export default function Profile() {
           <button type="submit" className="primary-btn">Save changes</button>
         </div>
       </form>
+
+      <div className="panel" style={{ marginTop: 18 }}>
+        <h2 style={{ marginTop: 0 }}>Billing</h2>
+        {subscription ? (
+          <>
+            <p className="muted-label" style={{ marginTop: -8, marginBottom: 14 }}>
+              {subscription.plans?.name || subscription.plan_id} plan
+              {subscription.plans?.seat_limit != null ? ` — up to ${subscription.plans.seat_limit} seats` : ' — unlimited seats'}
+              {subscription.billing_cycle ? `, billed ${subscription.billing_cycle}` : ''}.{' '}
+              <span className={'badge ' + (subscription.status === 'active' ? 'badge-green' : subscription.status === 'past_due' ? 'badge-amber' : 'badge-neutral')}>
+                {subscription.status}
+              </span>
+            </p>
+            {billingError && <div className="auth-error">{billingError}</div>}
+            {canManageTeam ? (
+              <button type="button" className="chip-btn" disabled={billingBusy} onClick={openBillingPortal}>
+                {billingBusy ? 'Opening…' : 'Manage billing'}
+              </button>
+            ) : (
+              <p className="muted-label" style={{ margin: 0 }}>Only an owner or admin can manage billing.</p>
+            )}
+          </>
+        ) : (
+          <p className="muted-label" style={{ margin: 0 }}>No billing information yet.</p>
+        )}
+      </div>
 
       <div className="panel" style={{ marginTop: 18 }}>
         <h2 style={{ marginTop: 0 }}>Team</h2>

@@ -56,6 +56,28 @@ Deno.serve(async (req) => {
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
   const siteUrl = Deno.env.get('SITE_URL');
 
+  // Seat enforcement: a company must have an active subscription and be
+  // under its plan's seat limit before it can invite another teammate.
+  const { data: subscription } = await adminClient
+    .from('company_subscriptions')
+    .select('status, plan_id, plans(seat_limit, name)')
+    .eq('company_id', callerProfile.company_id)
+    .maybeSingle();
+  if (!subscription || subscription.status !== 'active') {
+    return json({ error: 'Your company has no active subscription — subscribe to a plan before inviting teammates.' }, 402);
+  }
+  const seatLimit = (subscription.plans as { seat_limit: number | null; name: string } | null)?.seat_limit;
+  if (seatLimit != null) {
+    const { count } = await adminClient
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .eq('company_id', callerProfile.company_id);
+    if ((count ?? 0) >= seatLimit) {
+      const planName = (subscription.plans as { seat_limit: number | null; name: string } | null)?.name || 'your plan';
+      return json({ error: `${planName} is limited to ${seatLimit} seats — upgrade your plan to invite more teammates.` }, 402);
+    }
+  }
+
   const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
     redirectTo: siteUrl ? `${siteUrl}/reset-password` : undefined,
   });

@@ -19,6 +19,8 @@ import ServiceTicketsPage from './pages/service/ServiceTicketsPage';
 import AcceptQuote from './pages/AcceptQuote';
 import ResetPassword from './pages/ResetPassword';
 import PublicChatWidget from './pages/PublicChatWidget';
+import ChoosePlanPage from './pages/billing/ChoosePlanPage';
+import BillingSuccessPage from './pages/billing/BillingSuccessPage';
 
 // Map + roof-design pages pull in leaflet/leaflet-draw/turf, which is most
 // of the app's JS weight — loading them only when visited keeps the initial
@@ -31,7 +33,7 @@ function RouteFallback() {
 }
 
 function App() {
-  const { session, loading } = useAuth();
+  const { session, loading, subscription } = useAuth();
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -87,24 +89,37 @@ function App() {
     return location.pathname === '/login' ? <Login theme={theme} /> : <Landing theme={theme} />;
   }
 
+  // A company with no active subscription — either a brand-new signup that
+  // hasn't picked a plan yet, or an existing one whose payment lapsed —
+  // sees only the billing flow until it's active. Grandfathered companies
+  // (see the billing migration) already have an active row, so this never
+  // catches anyone who was using the app before billing existed.
+  const subscriptionActive = subscription?.status === 'active';
+
   return (
     <Routes>
-      <Route element={<AppShell theme={theme} />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/map" element={<Suspense fallback={<RouteFallback />}><MapPage /></Suspense>} />
-        <Route path="/leads" element={<LeadsPage />} />
-        <Route path="/quotes" element={<QuotesPage />} />
-        <Route path="/quotes/:quoteId/design" element={<Suspense fallback={<RouteFallback />}><QuoteDesignPage /></Suspense>} />
-        <Route path="/jobs" element={<JobsPage />} />
-        <Route path="/jobs/:jobId" element={<JobDetailPage />} />
-        <Route path="/jobs/:jobId/stc-form" element={<StcAssignmentFormPage />} />
-        <Route path="/payments" element={<PaymentsPage />} />
-        <Route path="/service" element={<ServiceTicketsPage />} />
-        <Route path="/installers" element={<InstallersPage />} />
-        <Route path="/inventory" element={<InventoryPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
+      <Route path="/billing/choose-plan" element={<ChoosePlanPage />} />
+      <Route path="/billing/success" element={<BillingSuccessPage />} />
+      {subscriptionActive ? (
+        <Route element={<AppShell theme={theme} />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/map" element={<Suspense fallback={<RouteFallback />}><MapPage /></Suspense>} />
+          <Route path="/leads" element={<LeadsPage />} />
+          <Route path="/quotes" element={<QuotesPage />} />
+          <Route path="/quotes/:quoteId/design" element={<Suspense fallback={<RouteFallback />}><QuoteDesignPage /></Suspense>} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/jobs/:jobId" element={<JobDetailPage />} />
+          <Route path="/jobs/:jobId/stc-form" element={<StcAssignmentFormPage />} />
+          <Route path="/payments" element={<PaymentsPage />} />
+          <Route path="/service" element={<ServiceTicketsPage />} />
+          <Route path="/installers" element={<InstallersPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      ) : (
+        <Route path="*" element={<Navigate to="/billing/choose-plan" replace />} />
+      )}
     </Routes>
   );
 }
