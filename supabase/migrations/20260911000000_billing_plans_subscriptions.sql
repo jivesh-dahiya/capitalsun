@@ -21,10 +21,10 @@ create table plans (
 alter table plans enable row level security;
 create policy "plans readable by anyone" on plans for select using (true);
 
-insert into plans (id, name, seat_limit, price_monthly_cents, price_annual_cents, sort_order) values
-  ('starter', 'Starter', 3, 4900, 49000, 1),
-  ('growth', 'Growth', 10, 9900, 99000, 2),
-  ('business', 'Business', null, 19900, 199000, 3);
+insert into plans (id, name, seat_limit, price_monthly_cents, price_annual_cents, stripe_price_id_monthly, stripe_price_id_annual, sort_order) values
+  ('starter', 'Starter', 3, 4900, 49000, 'price_1UEQe9LnI3Cm0PrRTQH6vblX', 'price_1UEQe9LnI3Cm0PrRg0RXp9cc', 1),
+  ('growth', 'Growth', 10, 9900, 99000, 'price_1UEQeBLnI3Cm0PrRMsmC6aS8', 'price_1UEQeBLnI3Cm0PrRLUiv95xk', 2),
+  ('business', 'Business', null, 19900, 199000, 'price_1UEQeDLnI3Cm0PrRQp81rxW6', 'price_1UEQeDLnI3Cm0PrRwZjrdSBp', 3);
 
 create table company_subscriptions (
   company_id uuid primary key references companies (id) on delete cascade,
