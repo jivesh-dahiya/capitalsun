@@ -26,10 +26,11 @@ Workflows already built and live: lead intake (including an AI-style guided chat
 
 ## Capabilities and Constraints
 
-- Team accounts exist: an owner creates a company workspace; owner/admin can invite teammates as admin or member. This is the seat/ownership model a future paid plan would meter, but no billing, plans, or pricing are implemented yet.
-- Public self-serve sign-up exists in the app (a "Sign up" flow creates a new company workspace) — the landing page's primary CTA can point at it.
+- Team accounts exist: an owner creates a company workspace; owner/admin can invite teammates as admin or member. This is the seat/ownership model billing meters (see below).
+- Public self-serve sign-up exists in the app (a "Sign up" flow creates a new company workspace) — the landing page's primary CTA can point at it. A new signup is gated into plan selection immediately (card required, no free trial) before it can use the app; existing pre-billing companies were grandfathered onto an active unlimited-seat plan so this never locked anyone out.
+- Billing is live (Stripe, AUD, subscription-based): 3 seat-based plans — Starter $49/mo·3 seats, Growth $99/mo·10 seats, Business $199/mo·unlimited — monthly or annual (2 months free). Every plan includes every feature; plans differ only by team size, never by capability. Managed via `supabase/migrations/20260911000000_billing_plans_subscriptions.sql`, the `create-checkout-session`/`stripe-webhook`/`create-billing-portal-session` Edge Functions, and `scripts/stripe-setup.mjs` (creates the Stripe Products/Prices). The Stripe account is registered under Capital Solar Energy Pty Ltd in Australia (ABN below) — the founder operates it from India, which is fine since Stripe's country restriction follows the registered business + payout bank account, not the operator's location.
 - No case studies, customer logos, review quotes, or usage numbers exist yet — this is a pre-launch/early product. The landing page must not invent any.
-- No pricing has been decided — omit a pricing section rather than inventing tiers.
+- Real pricing exists now (see billing above) — a landing-page pricing section can reference these real numbers; still don't invent numbers/tiers beyond what's actually configured in the `plans` table.
 
 ## Brand Commitments
 
@@ -44,11 +45,11 @@ Workflows already built and live: lead intake (including an AI-style guided chat
 - Real, running product at `src/` — every workflow named above is implemented and live in production, not mocked.
 - `src/styles.css` carries the incumbent design tokens (`--primary`, `--bg`, `--panel`, `--text`, `--line`, etc., light and dark) used throughout the authenticated app.
 - No testimonials, customer names, or metrics exist — do not fabricate them for this page.
-- No pricing has been set — do not invent numbers or tiers.
+- Real pricing is set (Starter/Growth/Business, see Capabilities and Constraints) — use those real numbers rather than inventing different ones.
 
 ## Product Principles
 
 1. Real compliance and real equipment data are the product's credibility — lead with what's actually true (real STC math, real CEC catalog, real government-form generation), not generic CRM claims.
 2. Built for the actual day-to-day: field-realistic workflows (site inspection stages, installer sign-off, RFIs) over abstract "productivity" messaging.
 3. Grounded and utilitarian over flashy — this is a tool professionals trust with compliance paperwork, not a consumer app.
-4. Positioned as a company others can join (per the confirmed SaaS-pitch direction), while staying honest that pricing/plans aren't public yet.
+4. Positioned as a company others can join (per the confirmed SaaS-pitch direction) — now backed by real, live subscription billing rather than an aspirational pitch.
