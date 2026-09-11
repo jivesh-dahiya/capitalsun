@@ -47,11 +47,19 @@ function App() {
   // the latter changes the URL bar but leaves React Router's own location
   // state (what useSearchParams() actually reads) stale, since it doesn't
   // intercept history calls made outside its own APIs.
+  // Navigates straight to "/" rather than just stripping the query param in
+  // place: landing back on plain "/login" isn't a route this app's
+  // authenticated tree ever matches (the billing gate's own wildcard route
+  // would then immediately try to redirect it elsewhere on the very same
+  // render), so two navigations were racing each other here. "/" is always
+  // a defined destination — the dashboard if subscribed, or the billing
+  // gate's own redirect from there if not — so only one redirect ever
+  // fires.
   useEffect(() => {
     if (session && location.search.includes('mode=signup')) {
-      navigate(location.pathname, { replace: true });
+      navigate('/', { replace: true });
     }
-  }, [session, location.pathname, location.search, navigate]);
+  }, [session, location.search, navigate]);
 
   // Public, unauthenticated surface: customers accept a proposal without ever logging in.
   if (location.pathname.startsWith('/accept/')) {
@@ -96,30 +104,36 @@ function App() {
   // catches anyone who was using the app before billing existed.
   const subscriptionActive = subscription?.status === 'active';
 
+  if (!subscriptionActive) {
+    return (
+      <Routes>
+        <Route path="/billing/choose-plan" element={<ChoosePlanPage />} />
+        <Route path="/billing/success" element={<BillingSuccessPage />} />
+        <Route path="*" element={<Navigate to="/billing/choose-plan" replace />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
       <Route path="/billing/choose-plan" element={<ChoosePlanPage />} />
       <Route path="/billing/success" element={<BillingSuccessPage />} />
-      {subscriptionActive ? (
-        <Route element={<AppShell theme={theme} />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/map" element={<Suspense fallback={<RouteFallback />}><MapPage /></Suspense>} />
-          <Route path="/leads" element={<LeadsPage />} />
-          <Route path="/quotes" element={<QuotesPage />} />
-          <Route path="/quotes/:quoteId/design" element={<Suspense fallback={<RouteFallback />}><QuoteDesignPage /></Suspense>} />
-          <Route path="/jobs" element={<JobsPage />} />
-          <Route path="/jobs/:jobId" element={<JobDetailPage />} />
-          <Route path="/jobs/:jobId/stc-form" element={<StcAssignmentFormPage />} />
-          <Route path="/payments" element={<PaymentsPage />} />
-          <Route path="/service" element={<ServiceTicketsPage />} />
-          <Route path="/installers" element={<InstallersPage />} />
-          <Route path="/inventory" element={<InventoryPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      ) : (
-        <Route path="*" element={<Navigate to="/billing/choose-plan" replace />} />
-      )}
+      <Route element={<AppShell theme={theme} />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/map" element={<Suspense fallback={<RouteFallback />}><MapPage /></Suspense>} />
+        <Route path="/leads" element={<LeadsPage />} />
+        <Route path="/quotes" element={<QuotesPage />} />
+        <Route path="/quotes/:quoteId/design" element={<Suspense fallback={<RouteFallback />}><QuoteDesignPage /></Suspense>} />
+        <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/jobs/:jobId" element={<JobDetailPage />} />
+        <Route path="/jobs/:jobId/stc-form" element={<StcAssignmentFormPage />} />
+        <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/service" element={<ServiceTicketsPage />} />
+        <Route path="/installers" element={<InstallersPage />} />
+        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
     </Routes>
   );
 }
