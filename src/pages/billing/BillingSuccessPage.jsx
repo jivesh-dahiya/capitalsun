@@ -13,7 +13,7 @@ export default function BillingSuccessPage() {
   const attemptsRef = useRef(0);
 
   useEffect(() => {
-    if (subscription?.status === 'active') {
+    if (subscription?.status === 'active' || subscription?.status === 'trialing') {
       navigate('/', { replace: true });
       return;
     }
