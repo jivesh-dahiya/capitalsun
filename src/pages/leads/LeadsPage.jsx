@@ -182,7 +182,7 @@ export default function LeadsPage() {
               <h2>AI chat intake</h2>
               <button type="button" className="icon-btn" aria-label="Close" onClick={() => setShowChatSettings(false)}><CloseIcon /></button>
             </div>
-            <p className="muted-label" style={{ marginTop: 0 }}>
+            <p className="help-text" style={{ marginTop: 0 }}>
               Embed this on your website so a visitor gets a guided intake chat any time, day or night — it asks what
               they want installed, their bill, address and contact details, estimates a system size, scores the lead,
               and alerts you here in real time the moment it lands.
@@ -218,7 +218,7 @@ export default function LeadsPage() {
               <h2>Connect your website</h2>
               <button type="button" className="icon-btn" aria-label="Close" onClick={() => setShowApiSettings(false)}><CloseIcon /></button>
             </div>
-          <p className="muted-label" style={{ marginTop: 0 }}>
+          <p className="help-text" style={{ marginTop: 0 }}>
             If leads already come in through your existing website's contact form or admin page, point that form's
             submit handler (or a Zapier/Make.com webhook, or a WordPress plugin) at this endpoint and they'll land
             straight in this pipeline with a live alert — same as the chat widget, just from your own form instead

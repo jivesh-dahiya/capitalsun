@@ -699,7 +699,7 @@ function DeclarationTab({ form, update, setField, company, job, onSignRep, onSig
   return (
     <div>
       <h2>Retailer Declaration</h2>
-      <p className="muted-label">
+      <p className="help-text">
         Based on the Clean Energy Regulator's sample solar retailer written statement for solar PV systems
         (Renewable Energy (Electricity) Regulations 2001, regulation 20AH).
       </p>
@@ -857,7 +857,7 @@ function NotesTab({ notes, noteDraft, setNoteDraft, noteType, setNoteType, onAdd
   return (
     <div>
       <h2>Notes &amp; RFIs</h2>
-      <p className="muted-label">
+      <p className="help-text">
         A Request for Information (RFI) is flagged here for your team to action manually — this build doesn't
         submit RFIs to a regulator ticketing system.
       </p>

@@ -141,7 +141,7 @@ export default function InventoryPage() {
         {loading ? (
           <div className="empty-state">Loading inventory…</div>
         ) : filtered.length === 0 ? (
-          <div className="empty-state">No data available.</div>
+          <div className="empty-state">No panels found.</div>
         ) : (
           <table>
             <thead>

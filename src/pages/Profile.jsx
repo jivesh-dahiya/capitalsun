@@ -208,7 +208,7 @@ export default function Profile() {
             )}
           </div>
         </label>
-        <p className="muted-label" style={{ marginTop: -8, marginBottom: 18 }}>
+        <p className="help-text" style={{ marginTop: -8, marginBottom: 18 }}>
           Shown at the top of every customer-facing proposal.
         </p>
 
@@ -285,7 +285,7 @@ export default function Profile() {
         </div>
 
         <h2>Rebate Defaults</h2>
-        <p className="muted-label" style={{ marginTop: -8, marginBottom: 12 }}>
+        <p className="help-text" style={{ marginTop: -8, marginBottom: 12 }}>
           Starting assumptions for new quotes — STC prices float daily on the open market, so treat these as your
           own working numbers, not a live feed.
         </p>
@@ -301,7 +301,7 @@ export default function Profile() {
         </div>
 
         <h2>STC Agent</h2>
-        <p className="muted-label" style={{ marginTop: -8, marginBottom: 12 }}>
+        <p className="help-text" style={{ marginTop: -8, marginBottom: 12 }}>
           The business that receives the assignment of small-scale technology certificates on the STC Assignment
           Form — usually your own business, or an external STC aggregator you work with. Leave blank to use your
           own company name and ABN above.
@@ -331,7 +331,7 @@ export default function Profile() {
         <h2 style={{ marginTop: 0 }}>Billing</h2>
         {subscription ? (
           <>
-            <p className="muted-label" style={{ marginTop: -8, marginBottom: 14 }}>
+            <p className="help-text" style={{ marginTop: -8, marginBottom: 14 }}>
               {subscription.plans?.name || subscription.plan_id} plan
               {subscription.plans?.seat_limit != null ? ` — up to ${subscription.plans.seat_limit} seats` : ' — unlimited seats'}
               {subscription.billing_cycle ? `, billed ${subscription.billing_cycle}` : ''}.{' '}
@@ -347,17 +347,17 @@ export default function Profile() {
                 {billingBusy ? 'Opening…' : 'Manage billing'}
               </button>
             ) : (
-              <p className="muted-label" style={{ margin: 0 }}>Only an owner or admin can manage billing.</p>
+              <p className="help-text" style={{ margin: 0 }}>Only an owner or admin can manage billing.</p>
             )}
           </>
         ) : (
-          <p className="muted-label" style={{ margin: 0 }}>No billing information yet.</p>
+          <p className="help-text" style={{ margin: 0 }}>No billing information yet.</p>
         )}
       </div>
 
       <div className="panel" style={{ marginTop: 18 }}>
         <h2 style={{ marginTop: 0 }}>Team</h2>
-        <p className="muted-label" style={{ marginTop: -8, marginBottom: 14 }}>
+        <p className="help-text" style={{ marginTop: -8, marginBottom: 14 }}>
           Public sign-up is off in production — this is how you add staff. An invited teammate gets an email with a
           link to set their own password and join {company.company_name || 'your company'}.
           {!canManageTeam && ' Only an owner or admin can invite, promote, or remove teammates.'}

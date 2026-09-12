@@ -85,7 +85,7 @@ export default function MapPage() {
           {unmapped.length > 0 && (
             <div className="panel" style={{ marginTop: 14 }}>
               <div className="panel-header"><h2>Not shown on map ({unmapped.length})</h2></div>
-              <p className="muted-label" style={{ marginBottom: 10, textTransform: 'none', fontWeight: 400 }}>
+              <p className="help-text" style={{ marginBottom: 10 }}>
                 These addresses couldn't be located automatically. Try again, or check the address on the job.
               </p>
               <ul className="unmapped-list">

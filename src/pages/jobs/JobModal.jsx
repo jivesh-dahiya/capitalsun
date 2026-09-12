@@ -124,7 +124,7 @@ export default function JobModal({ companyId, installers, installerWorkload, exi
             <h2>Add equipment</h2>
             <button type="button" className="icon-btn" aria-label="Close" onClick={onCreated}><CloseIcon /></button>
           </div>
-          <p className="muted-label" style={{ marginBottom: 16 }}>
+          <p className="help-text" style={{ marginBottom: 16 }}>
             Optional — record the panels, inverter and battery used for this job. You can also add this later from the job card.
           </p>
           <EquipmentForm jobId={createdJobId} existingEquipment={[]} onDone={onCreated} onSkip={onCreated} />

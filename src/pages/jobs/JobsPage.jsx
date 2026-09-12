@@ -28,7 +28,7 @@ export default function JobsPage() {
   const [savedFlash, setSavedFlash] = useState({});
   const tabRefs = useRef({});
   const jobCardRefs = useRef({});
-  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [indicator, setIndicator] = useState({ left: 0, top: 0, width: 0 });
   const [searchParams, setSearchParams] = useSearchParams();
   const [highlightJobId, setHighlightJobId] = useState(null);
 
@@ -58,15 +58,20 @@ export default function JobsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobs, searchParams]);
 
+  // The strip wraps to multiple rows once all 13 stages don't fit one line
+  // (routine below ~1200px, and often on desktop too) — offsetTop, not just
+  // offsetLeft, has to feed the indicator or it stays pinned to the last
+  // row while tracking the active tab's column, landing under whichever
+  // tab happens to occupy that column in the wrong row.
   useLayoutEffect(() => {
     const el = tabRefs.current[activeStage];
-    if (el) setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+    if (el) setIndicator({ left: el.offsetLeft, top: el.offsetTop + el.offsetHeight - 1, width: el.offsetWidth });
   }, [activeStage, jobs.length]);
 
   useEffect(() => {
     function handleResize() {
       const el = tabRefs.current[activeStage];
-      if (el) setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+      if (el) setIndicator({ left: el.offsetLeft, top: el.offsetTop + el.offsetHeight - 1, width: el.offsetWidth });
     }
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -254,7 +259,7 @@ export default function JobsPage() {
       <div className="tab-strip">
         <span
           className="tab-indicator"
-          style={{ transform: `translateX(${indicator.left}px) scaleX(${indicator.width})` }}
+          style={{ transform: `translate(${indicator.left}px, ${indicator.top}px) scaleX(${indicator.width})` }}
         />
         {STAGES.map((stage) => (
           <button

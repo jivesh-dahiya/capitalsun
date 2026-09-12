@@ -182,7 +182,7 @@ export default function StcAssignmentFormPage() {
 
       <div className="panel no-print stc-form-editor">
         <h2>Form details</h2>
-        <p className="muted-label">
+        <p className="help-text">
           Fill in the fields below — they feed directly into the printable assignment form underneath. Owner, address,
           equipment and STC totals are pulled automatically from this job's System Details and Documents.
         </p>
