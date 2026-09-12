@@ -66,6 +66,10 @@ export default function ChoosePlanPage() {
           Every plan includes every feature — leads, quoting, the satellite design tool, STC compliance
           paperwork, installer and inventory management. Plans only differ by team size.
         </p>
+        <p className="auth-subtitle" style={{ marginTop: -14 }}>
+          Every plan starts with a <strong>3-day free trial</strong> — we take your card now but don&apos;t
+          charge it until the trial ends, and you can cancel anytime before then from Billing in Profile.
+        </p>
 
         <div className="plan-cycle-toggle" role="tablist" aria-label="Billing cycle">
           <button type="button" className={cycle === 'monthly' ? 'active' : ''} onClick={() => setCycle('monthly')}>
@@ -97,7 +101,7 @@ export default function ChoosePlanPage() {
                   disabled={busyPlan !== null}
                   onClick={() => subscribe(plan.id)}
                 >
-                  {busyPlan === plan.id ? 'Redirecting…' : `Choose ${plan.name}`}
+                  {busyPlan === plan.id ? 'Redirecting…' : 'Start 3-day free trial'}
                 </button>
               </div>
             );

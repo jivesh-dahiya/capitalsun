@@ -102,7 +102,7 @@ function App() {
   // sees only the billing flow until it's active. Grandfathered companies
   // (see the billing migration) already have an active row, so this never
   // catches anyone who was using the app before billing existed.
-  const subscriptionActive = subscription?.status === 'active';
+  const subscriptionActive = subscription?.status === 'active' || subscription?.status === 'trialing';
 
   if (!subscriptionActive) {
     return (

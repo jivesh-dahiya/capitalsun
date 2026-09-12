@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     .select('status, plan_id, plans(seat_limit, name)')
     .eq('company_id', callerProfile.company_id)
     .maybeSingle();
-  if (!subscription || subscription.status !== 'active') {
+  if (!subscription || !['active', 'trialing'].includes(subscription.status)) {
     return json({ error: 'Your company has no active subscription — subscribe to a plan before inviting teammates.' }, 402);
   }
   const seatLimit = (subscription.plans as { seat_limit: number | null; name: string } | null)?.seat_limit;

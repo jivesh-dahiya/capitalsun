@@ -335,8 +335,10 @@ export default function Profile() {
               {subscription.plans?.name || subscription.plan_id} plan
               {subscription.plans?.seat_limit != null ? ` — up to ${subscription.plans.seat_limit} seats` : ' — unlimited seats'}
               {subscription.billing_cycle ? `, billed ${subscription.billing_cycle}` : ''}.{' '}
-              <span className={'badge ' + (subscription.status === 'active' ? 'badge-green' : subscription.status === 'past_due' ? 'badge-amber' : 'badge-neutral')}>
-                {subscription.status}
+              <span className={'badge ' + (subscription.status === 'active' ? 'badge-green' : subscription.status === 'trialing' ? 'badge-amber' : subscription.status === 'past_due' ? 'badge-amber' : 'badge-neutral')}>
+                {subscription.status === 'trialing' && subscription.trial_end
+                  ? `trial — ${Math.max(0, Math.ceil((new Date(subscription.trial_end) - new Date()) / 86400000))} day(s) left`
+                  : subscription.status}
               </span>
             </p>
             {billingError && <div className="auth-error">{billingError}</div>}

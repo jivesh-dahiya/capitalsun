@@ -89,7 +89,7 @@ export default function Landing() {
             <span className="landing-hero-bar-result-figure">{stcCount} STCs</span>
             <span className="landing-hero-bar-result-sub">${stcValue.toLocaleString()} est. value</span>
           </div>
-          <Link className="landing-hero-bar-cta" to="/login?mode=signup">Get started</Link>
+          <Link className="landing-hero-bar-cta" to="/login?mode=signup">Start free trial</Link>
         </div>
       </section>
 
@@ -126,7 +126,7 @@ export default function Landing() {
               Real STC rebate math using the actual government deeming formula, a real CEC-approved equipment
               catalog, and STC Assignment Forms in the structure the scheme actually expects.
             </p>
-            <Link className="landing-hero-cta" to="/login?mode=signup">Get started</Link>
+            <Link className="landing-hero-cta" to="/login?mode=signup">Start free trial</Link>
           </div>
           <div className="landing-gallery-photos">
             <figure className="landing-gallery-photo landing-gallery-photo--main">

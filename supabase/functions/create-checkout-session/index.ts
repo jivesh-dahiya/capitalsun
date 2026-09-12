@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
 
   const { data: existingSub } = await adminClient
     .from('company_subscriptions')
-    .select('stripe_customer_id')
+    .select('stripe_customer_id, stripe_subscription_id')
     .eq('company_id', callerProfile.company_id)
     .maybeSingle();
 
@@ -89,6 +89,11 @@ Deno.serve(async (req) => {
     customerId = customer.id;
   }
 
+  // 3-day free trial — first subscription only. A company that already has
+  // (or has had) a real Stripe subscription doesn't get a second free trial
+  // just by switching plans.
+  const eligibleForTrial = !existingSub?.stripe_subscription_id;
+
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
     customer: customerId,
@@ -96,7 +101,10 @@ Deno.serve(async (req) => {
     success_url: `${siteUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl}/billing/choose-plan`,
     client_reference_id: callerProfile.company_id,
-    subscription_data: { metadata: { company_id: callerProfile.company_id } },
+    subscription_data: {
+      metadata: { company_id: callerProfile.company_id },
+      ...(eligibleForTrial ? { trial_period_days: 3 } : {}),
+    },
     metadata: { company_id: callerProfile.company_id },
   });
 

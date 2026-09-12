@@ -61,7 +61,8 @@ Deno.serve(async (req) => {
       }
     }
 
-    const status = sub.status === 'active' || sub.status === 'trialing' ? 'active'
+    const status = sub.status === 'active' ? 'active'
+      : sub.status === 'trialing' ? 'trialing'
       : sub.status === 'past_due' || sub.status === 'unpaid' ? 'past_due'
       : sub.status === 'canceled' || sub.status === 'incomplete_expired' ? 'canceled'
       : 'incomplete';
@@ -77,6 +78,7 @@ Deno.serve(async (req) => {
         stripe_subscription_id: sub.id,
         status,
         current_period_end: periodEndSeconds ? new Date(periodEndSeconds * 1000).toISOString() : null,
+        trial_end: sub.trial_end ? new Date(sub.trial_end * 1000).toISOString() : null,
       },
       { onConflict: 'company_id' }
     );
