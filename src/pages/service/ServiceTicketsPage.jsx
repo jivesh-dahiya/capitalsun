@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
-import { CloseIcon } from '../../components/icons';
+import { CloseIcon, WrenchIcon } from '../../components/icons';
+import EmptyState from '../../components/EmptyState';
 
 const CATEGORIES = ['Inverter issue', 'Panel issue', 'Generation issue', 'Wiring', 'Monitoring', 'Other'];
 const SEVERITIES = [
@@ -108,7 +109,13 @@ export default function ServiceTicketsPage() {
       {loading ? (
         <div className="panel empty-state">Loading tickets…</div>
       ) : visible.length === 0 ? (
-        <div className="panel empty-state">No service tickets yet.</div>
+        <div className="panel">
+          <EmptyState
+            icon={WrenchIcon}
+            title="No service tickets yet"
+            hint="Log a call-out or fault report here to track it through to resolution."
+          />
+        </div>
       ) : (
         <div className="job-list">
           {visible.map((t) => (

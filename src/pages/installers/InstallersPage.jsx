@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
+import EmptyState from '../../components/EmptyState';
+import { HardHatIcon } from '../../components/icons';
 
 const ROLE_OPTIONS = ['Installer', 'Electrician', 'Designer'];
 
@@ -174,7 +176,11 @@ export default function InstallersPage() {
         {loading ? (
           <div className="empty-state">Loading installers…</div>
         ) : filtered.length === 0 ? (
-          <div className="empty-state">No installers yet.</div>
+          <EmptyState
+            icon={HardHatIcon}
+            title="No installers yet"
+            hint="Add your crew's accreditation and license details so you can assign them to jobs."
+          />
         ) : (
           <table>
             <thead>

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 import Combobox from '../../components/Combobox';
+import EmptyState from '../../components/EmptyState';
+import { BoxIcon } from '../../components/icons';
 
 const emptyForm = {
   manufacturerId: '',
@@ -141,7 +143,11 @@ export default function InventoryPage() {
         {loading ? (
           <div className="empty-state">Loading inventory…</div>
         ) : filtered.length === 0 ? (
-          <div className="empty-state">No panels found.</div>
+          <EmptyState
+            icon={BoxIcon}
+            title="No panels found"
+            hint="Add unverified panels above, or verify serials against a job to track them here."
+          />
         ) : (
           <table>
             <thead>

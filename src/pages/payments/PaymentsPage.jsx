@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
-import { CloseIcon } from '../../components/icons';
+import { CloseIcon, CoinIcon } from '../../components/icons';
+import EmptyState from '../../components/EmptyState';
 
 const emptyForm = { jobId: '', milestoneLabel: 'Deposit', amount: '', dueDate: '' };
 
@@ -114,7 +115,11 @@ export default function PaymentsPage() {
         {loading ? (
           <div className="empty-state">Loading payments…</div>
         ) : visible.length === 0 ? (
-          <div className="empty-state">No payment milestones yet.</div>
+          <EmptyState
+            icon={CoinIcon}
+            title="No payment milestones yet"
+            hint="Add a deposit, progress, or final payment milestone against a job to start tracking it here."
+          />
         ) : (
           <table>
             <thead>

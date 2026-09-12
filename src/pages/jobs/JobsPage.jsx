@@ -7,7 +7,8 @@ import JobModal from './JobModal';
 import SignJobModal from './SignJobModal';
 import EquipmentForm from './EquipmentForm';
 import { downloadCsv, JOB_EXPORT_COLUMNS, STC_EXPORT_COLUMNS, BSTC_EXPORT_COLUMNS } from './csv';
-import { CloseIcon } from '../../components/icons';
+import { CloseIcon, BriefcaseIcon } from '../../components/icons';
+import EmptyState from '../../components/EmptyState';
 import { withViewTransition } from '../../lib/viewTransition';
 import { useRealtimeJobs } from '../../lib/useRealtimeJobs';
 
@@ -299,7 +300,13 @@ export default function JobsPage() {
       {loading ? (
         <div className="panel empty-state">Loading jobs…</div>
       ) : visibleJobs.length === 0 ? (
-        <div className="panel empty-state">No jobs in this stage yet.</div>
+        <div className="panel">
+          <EmptyState
+            icon={BriefcaseIcon}
+            title={`No jobs in ${STAGES.find((s) => s.key === activeStage)?.label || 'this stage'} yet`}
+            hint="Move a job here as it progresses, or start a new one from a lead or quote."
+          />
+        </div>
       ) : (
         <div className="job-list">
           <div className="job-list-header">

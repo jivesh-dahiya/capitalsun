@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthContext';
 import { withViewTransition } from '../lib/viewTransition';
-import { CloseIcon, SunIcon, MoonIcon, SearchIcon, HomeIcon, BriefcaseIcon, PeopleIcon, CertificateIcon, GridIcon } from '../components/icons';
+import { CloseIcon, SunIcon, MoonIcon, SearchIcon, HomeIcon, BriefcaseIcon, PeopleIcon, CertificateIcon, GridIcon, MapPinIcon, CoinIcon, WrenchIcon, HardHatIcon, BoxIcon, UserIcon } from '../components/icons';
 import CommandPalette from '../components/CommandPalette';
 import { useNewLeadAlerts } from '../lib/useNewLeadAlerts';
 
 const nav = [
-  { to: '/', label: 'Dashboard', end: true },
-  { to: '/map', label: 'Map' },
-  { to: '/leads', label: 'Leads' },
-  { to: '/quotes', label: 'Quotes' },
-  { to: '/jobs', label: 'Jobs' },
-  { to: '/payments', label: 'Payments' },
-  { to: '/service', label: 'Service' },
-  { to: '/installers', label: 'Installers' },
-  { to: '/inventory', label: 'Inventory' },
-  { to: '/profile', label: 'Profile' },
+  { to: '/', label: 'Dashboard', end: true, Icon: HomeIcon },
+  { to: '/map', label: 'Map', Icon: MapPinIcon },
+  { to: '/leads', label: 'Leads', Icon: PeopleIcon },
+  { to: '/quotes', label: 'Quotes', Icon: CertificateIcon },
+  { to: '/jobs', label: 'Jobs', Icon: BriefcaseIcon },
+  { to: '/payments', label: 'Payments', Icon: CoinIcon },
+  { to: '/service', label: 'Service', Icon: WrenchIcon },
+  { to: '/installers', label: 'Installers', Icon: HardHatIcon },
+  { to: '/inventory', label: 'Inventory', Icon: BoxIcon },
+  { to: '/profile', label: 'Profile', Icon: UserIcon },
 ];
 
 // The four most-used pages for someone working day-to-day (field staff,
@@ -86,6 +86,7 @@ export default function AppShell({ theme: { theme, toggleTheme } }) {
               onClick={(e) => handleNavClick(e, item.to)}
               className={({ isActive }) => 'nav-item' + (isActive ? ' active' : '')}
             >
+              <item.Icon width={17} height={17} />
               {item.label}
             </NavLink>
           ))}

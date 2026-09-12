@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 import { AU_STATES } from '../jobs/jobConstants';
-import { CloseIcon } from '../../components/icons';
+import { CloseIcon, CertificateIcon } from '../../components/icons';
+import EmptyState from '../../components/EmptyState';
 import Section from '../../components/Section';
 import ShareProposalModal from '../../components/ShareProposalModal';
 import QuoteLineItemsModal from '../../components/QuoteLineItemsModal';
@@ -112,7 +113,11 @@ export default function QuotesPage() {
         {loading ? (
           <div className="empty-state">Loading quotes…</div>
         ) : quotes.length === 0 ? (
-          <div className="empty-state">No quotes yet.</div>
+          <EmptyState
+            icon={CertificateIcon}
+            title="No quotes yet"
+            hint="Convert a qualified lead, or start a new quote to design a system and generate STC figures."
+          />
         ) : (
           <table>
             <thead>

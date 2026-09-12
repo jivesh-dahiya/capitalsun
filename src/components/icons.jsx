@@ -203,6 +203,53 @@ export function PeopleIcon(props) {
   );
 }
 
+export function MapPinIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9 4 3 6.2v14L9 18l6 2.2 6-2.2v-14L15 6l-6-2Z" />
+      <line x1="9" y1="4" x2="9" y2="18" />
+      <line x1="15" y1="6" x2="15" y2="20.2" />
+    </svg>
+  );
+}
+
+export function WrenchIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3.5 17.5l3 3 5.8-5.8a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.4-2.4 2.2-2.8Z" />
+    </svg>
+  );
+}
+
+export function HardHatIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4.5 15.5a7.5 7.5 0 0 1 15 0" />
+      <rect x="2.5" y="15.5" width="19" height="2.6" rx="1.3" />
+      <path d="M12 6v3.5" />
+    </svg>
+  );
+}
+
+export function BoxIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+      <path d="M3 8l9 5 9-5" />
+      <path d="M12 13v8" />
+    </svg>
+  );
+}
+
+export function UserIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4.5 20c0-3.6 3.4-6.2 7.5-6.2s7.5 2.6 7.5 6.2" />
+    </svg>
+  );
+}
+
 export function GridIcon(props) {
   return (
     <svg {...base} {...props}>
