@@ -33,7 +33,7 @@ function RouteFallback() {
 }
 
 function App() {
-  const { session, loading, subscription } = useAuth();
+  const { session, loading, profileReady, subscription } = useAuth();
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -95,6 +95,18 @@ function App() {
 
   if (!session) {
     return location.pathname === '/login' ? <Login theme={theme} /> : <Landing theme={theme} />;
+  }
+
+  // Session just went truthy (sign-in, or the initial session restore) but
+  // profile/company/subscription may still reflect a previous, different
+  // state (or nothing at all) until loadProfile catches up — see
+  // profileReady's own comment in AuthContext. Deciding subscriptionActive
+  // on stale data here is exactly the bug that used to strand a genuinely
+  // subscribed user on the billing gate: it doesn't self-correct once the
+  // real data lands, because /billing/choose-plan is a valid route in both
+  // branches below.
+  if (!profileReady) {
+    return <div className="auth-shell"><div className="panel empty-state">Loading…</div></div>;
   }
 
   // A company with no active subscription — either a brand-new signup that

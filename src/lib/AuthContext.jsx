@@ -9,6 +9,16 @@ export function AuthProvider({ children }) {
   const [company, setCompany] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  // True once profile/company/subscription reflect the CURRENT session.
+  // Sign-in fires onAuthStateChange, which sets `session` synchronously but
+  // defers loadProfile to a macrotask (see below) — without this flag, a
+  // render in that gap sees session=truthy alongside stale (null)
+  // subscription state, reads that as "not subscribed", and redirects to
+  // the billing gate. Since that route matches in every branch of the
+  // gate, it never recovers even after the real subscription loads a
+  // moment later. Consumers should treat `loading || !profileReady` as
+  // "still figuring out access," not `loading` alone.
+  const [profileReady, setProfileReady] = useState(false);
   // While a signUp() call is creating the profile/company row, the auth-state-change
   // listener also fires and races loadProfile against that creation step. Suppress
   // the auto-sign-out during that window so it doesn't kick out a brand-new user.
@@ -29,6 +39,7 @@ export function AuthProvider({ children }) {
         setProfile(null);
         setCompany(null);
         setSubscription(null);
+        setProfileReady(true);
       }
       return;
     }
@@ -54,6 +65,7 @@ export function AuthProvider({ children }) {
       }
       setProfile(null);
       setCompany(null);
+      if (isCurrent()) setProfileReady(true);
       // Session references a user with no linked profile even after retrying
       // (e.g. the local database was reset since this browser tab last logged
       // in). Force back to login rather than leaving every page spinning on a
@@ -72,10 +84,12 @@ export function AuthProvider({ children }) {
       if (isCurrent()) {
         setCompany(companyRow ?? null);
         setSubscription(subscriptionRow ?? null);
+        setProfileReady(true);
       }
     } else {
       setCompany(null);
       setSubscription(null);
+      if (isCurrent()) setProfileReady(true);
     }
   }, []);
 
@@ -88,6 +102,11 @@ export function AuthProvider({ children }) {
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
+      // Synchronous, in the same tick as setSession: closes the gap where a
+      // render would otherwise see the new session alongside the previous
+      // session's stale profile/company/subscription state (see profileReady
+      // above).
+      setProfileReady(false);
       // Supabase awaits every onAuthStateChange subscriber before its own
       // signIn/signUp/etc. calls resolve — an async callback that does slow
       // work (loadProfile's retry loop) blocks those calls from ever
@@ -146,7 +165,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ session, profile, company, subscription, loading, signUp, signIn, signOut, requestPasswordReset, updatePassword, refreshCompany }}
+      value={{ session, profile, company, subscription, loading, profileReady, signUp, signIn, signOut, requestPasswordReset, updatePassword, refreshCompany }}
     >
       {children}
     </AuthContext.Provider>

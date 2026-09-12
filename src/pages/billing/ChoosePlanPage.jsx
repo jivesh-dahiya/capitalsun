@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabase';
 
@@ -28,10 +29,21 @@ const PLANS = [
 ];
 
 export default function ChoosePlanPage() {
-  const { company, signOut } = useAuth();
+  const { company, subscription, signOut } = useAuth();
+  const navigate = useNavigate();
   const [cycle, setCycle] = useState('monthly');
   const [busyPlan, setBusyPlan] = useState(null);
   const [error, setError] = useState('');
+
+  // Self-healing: a subscribed viewer has no reason to be here (a stale
+  // bookmark, the back button, or a slow-loading subscription check that
+  // briefly landed them here before catching up) — send them to the app
+  // rather than showing the pricing page to someone who already pays.
+  useEffect(() => {
+    if (subscription?.status === 'active' || subscription?.status === 'trialing') {
+      navigate('/', { replace: true });
+    }
+  }, [subscription, navigate]);
 
   async function subscribe(planId) {
     setError('');
